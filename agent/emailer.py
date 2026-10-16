@@ -9,6 +9,8 @@ Handles:
 
 import os
 import base64
+import smtplib
+from email.message import EmailMessage
 import logging
 from pathlib import Path
 from typing import List, Dict, Any, Optional
@@ -93,14 +95,22 @@ class ResendEmailer:
                     logger.warning(f"Could not save email preview: {e}")
             return True
 
+        # Check if SMTP configuration is provided (e.g. Gmail App Password)
+        smtp_user = os.environ.get("SMTP_USER") or os.environ.get("GMAIL_USER")
+        smtp_pass = os.environ.get("SMTP_PASSWORD") or os.environ.get("GMAIL_APP_PASSWORD")
+        if smtp_user and smtp_pass:
+            logger.info("Using SMTP for multi-recipient email delivery.")
+            return self._send_via_smtp(self.to_email, subject, email_html, attachment_paths)
+
         # Send via Resend REST API
         headers = {
             "Authorization": f"Bearer {self.api_key}",
             "Content-Type": "application/json"
         }
+        recipients = self.to_email if isinstance(self.to_email, list) else [self.to_email]
         payload = {
             "from": self.from_email,
-            "to": [self.to_email] if isinstance(self.to_email, str) else self.to_email,
+            "to": recipients,
             "subject": subject,
             "html": email_html,
             "attachments": attachments
@@ -109,13 +119,82 @@ class ResendEmailer:
         try:
             resp = requests.post("https://api.resend.com/emails", json=payload, headers=headers, timeout=30)
             if resp.status_code in [200, 201]:
-                logger.info(f"Email delivered successfully via Resend: ID {resp.json().get('id')}")
+                logger.info(f"Email delivered successfully via Resend to {recipients}: ID {resp.json().get('id')}")
                 return True
+            elif resp.status_code == 403 and len(recipients) > 1:
+                logger.warning(
+                    f"Resend multi-recipient send rejected ({resp.text}). "
+                    "Attempting individual deliveries for each recipient..."
+                )
+                any_success = False
+                for rec in recipients:
+                    sub_payload = dict(payload)
+                    sub_payload["to"] = [rec]
+                    try:
+                        sub_resp = requests.post("https://api.resend.com/emails", json=sub_payload, headers=headers, timeout=30)
+                        if sub_resp.status_code in [200, 201]:
+                            logger.info(f"Delivered to {rec} via Resend: ID {sub_resp.json().get('id')}")
+                            any_success = True
+                        else:
+                            logger.error(
+                                f"Failed to deliver to {rec} via Resend (HTTP {sub_resp.status_code}): {sub_resp.text}. "
+                                "Note: When using onboarding@resend.dev, Resend only allows sending to the account owner email."
+                            )
+                    except Exception as sub_e:
+                        logger.error(f"Error delivering to {rec}: {sub_e}")
+                return any_success
             else:
                 logger.error(f"Resend API error HTTP {resp.status_code}: {resp.text}")
                 return False
         except Exception as e:
             logger.error(f"Failed to connect to Resend API: {e}")
+            return False
+
+    def _send_via_smtp(
+        self,
+        to_addresses: List[str],
+        subject: str,
+        html_body: str,
+        attachment_paths: List[Path]
+    ) -> bool:
+        """Delivers daily scholarship reports via standard SMTP (e.g. Gmail)."""
+        smtp_user = os.environ.get("SMTP_USER") or os.environ.get("GMAIL_USER")
+        smtp_pass = os.environ.get("SMTP_PASSWORD") or os.environ.get("GMAIL_APP_PASSWORD")
+        smtp_host = os.environ.get("SMTP_HOST", "smtp.gmail.com")
+        smtp_port = int(os.environ.get("SMTP_PORT", "465"))
+
+        if not smtp_user or not smtp_pass:
+            return False
+
+        try:
+            msg = EmailMessage()
+            msg["Subject"] = subject
+            msg["From"] = smtp_user
+            msg["To"] = ", ".join(to_addresses)
+            msg.set_content("Please enable HTML to view this report.")
+            msg.add_alternative(html_body, subtype="html")
+
+            for path in attachment_paths:
+                p = Path(path)
+                if p.exists():
+                    with open(p, "rb") as f:
+                        file_data = f.read()
+                    msg.add_attachment(file_data, maintype="application", subtype="pdf", filename=p.name)
+
+            if smtp_port == 465:
+                with smtplib.SMTP_SSL(smtp_host, smtp_port, timeout=30) as server:
+                    server.login(smtp_user, smtp_pass)
+                    server.send_message(msg)
+            else:
+                with smtplib.SMTP(smtp_host, smtp_port, timeout=30) as server:
+                    server.starttls()
+                    server.login(smtp_user, smtp_pass)
+                    server.send_message(msg)
+
+            logger.info(f"Delivered email successfully via SMTP to {to_addresses}")
+            return True
+        except Exception as e:
+            logger.error(f"SMTP delivery failed: {e}")
             return False
 
     def _build_email_html(
