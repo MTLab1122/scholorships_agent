@@ -1,0 +1,112 @@
+app_name: "KP & Charsadda Scholarship Intelligence Agent"
+timezone: "Asia/Karachi" # UTC+5 (PKT)
+cycle: "2026-27"
+
+gemini:
+  model: "gemini-3.8-flash"
+  fallback_model: "gemini-3.5-flash-lite"
+  temperature: 0.1
+  max_retries: 3
+  retry_backoff_factor: 2.0
+
+pipeline:
+  follow_links_per_seed: 5
+  max_discovered_urls: 25
+  drop_after_days_unseen: 30
+  request_timeout_seconds: 25
+  browser_user_agent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36 (KP-Scholarships-Research-Agent/1.0)"
+  degraded_failure_threshold_ratio: 0.50 # If > 50% seed sources fail, subject marked [DEGRADED]
+
+email:
+  resend_api_key_env: "RESEND_API_KEY"
+  from_email_env: "RESEND_FROM_EMAIL"
+  to_email_env: "RESEND_TO_EMAIL"
+  default_from: "Scholarships Agent <scholarships@updates.internal>"
+  default_to: "kp-students@example.com"
+  subject_prefix: "KP & Charsadda Daily Scholarship Intelligence"
+
+discovery_queries:
+  - query: "site:gov.pk scholarship Khyber Pakhtunkhwa KP 2026 2027 open"
+    focus: "KP Provincial & Federal Government schemes for KP students"
+  - query: "site:edu.pk scholarship financial aid need based Peshawar Charsadda 2026"
+    focus: "University financial aid at Peshawar and Charsadda universities"
+  - query: "Charsadda domicile scholarship Bacha Khan University student 2026 2027"
+    focus: "Charsadda district specific scholarships and Bacha Khan University aid"
+  - query: "HEC Pakistan need based scholarship undergraduate 2026 2027 deadline"
+    focus: "Federal HEC and Ehsaas undergraduate programmes"
+  - query: "KPEF Khyber Pakhtunkhwa Education Foundation scholarship 2026"
+    focus: "KPEF provincial scholarships"
+  - query: "Ihsan Trust interest free loan Akhuwat university Pakistan 2026"
+    focus: "NGO, foundation and interest-free student loan programmes"
+  - query: "corporate scholarship OGDCL PPL MOL SNGPL Pakistan student 2026"
+    focus: "Corporate and state-owned enterprise scholarships"
+  - query: "Fulbright Chevening DAAD Commonwealth Turkey Pakistan student 2026 2027"
+    focus: "Prestigious international scholarships open to Pakistani and KP students"
+
+blocklist_domains:
+  - "facebook.com"
+  - "twitter.com"
+  - "x.com"
+  - "instagram.com"
+  - "linkedin.com"
+  - "pinterest.com"
+  - "youtube.com"
+  - "tiktok.com"
+  - "reddit.com"
+
+blocklist_names:
+  - "paid consultancy"
+  - "admission visa service"
+  - "test entry"
+
+watchlist:
+  - name: "HEC Need Based Scholarship Programme"
+    sponsor: "Higher Education Commission (HEC) Pakistan"
+    sponsor_type: "federal govt"
+    university_types: "public"
+    cycle: "2026-27"
+  - name: "Ehsaas / BISP Undergraduate Scholarship"
+    sponsor: "Benazir Income Support Programme / HEC"
+    sponsor_type: "federal govt"
+    university_types: "public"
+    cycle: "2026-27"
+  - name: "KPEF Merit & Need Scholarship"
+    sponsor: "Khyber Pakhtunkhwa Education Foundation (KPEF)"
+    sponsor_type: "provincial govt"
+    university_types: "both"
+    cycle: "2026-27"
+  - name: "Bacha Khan University Charsadda Student Financial Aid"
+    sponsor: "Bacha Khan University Charsadda"
+    sponsor_type: "university"
+    university_types: "public"
+    cycle: "2026-27"
+  - name: "University of Peshawar Need-Based & Fee Waiver Aid"
+    sponsor: "University of Peshawar"
+    sponsor_type: "university"
+    university_types: "public"
+    cycle: "2026-27"
+  - name: "UET Peshawar Directorate of Financial Aid"
+    sponsor: "University of Engineering & Technology Peshawar"
+    sponsor_type: "university"
+    university_types: "public"
+    cycle: "2026-27"
+  - name: "Abasyn University Peshawar Financial Assistance"
+    sponsor: "Abasyn University Peshawar"
+    sponsor_type: "university"
+    university_types: "private"
+    cycle: "2026-27"
+  - name: "Ihsan Trust Qarz-e-Hasna (Interest-Free Student Loan)"
+    sponsor: "Ihsan Trust"
+    sponsor_type: "NGO-foundation"
+    university_types: "both"
+    cycle: "2026-27"
+  - name: "Pakistan Bait-ul-Mal Educational Stipend"
+    sponsor: "Pakistan Bait-ul-Mal"
+    sponsor_type: "federal govt"
+    university_types: "both"
+    cycle: "2026-27"
+  - name: "OGDCL National Talent Hunt Scholarship"
+    sponsor: "Oil and Gas Development Company Limited"
+    sponsor_type: "corporate"
+    university_types: "both"
+    cycle: "2026-27"

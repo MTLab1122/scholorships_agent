@@ -1,0 +1,272 @@
+{
+  "public_universities": [
+    {
+      "name": "University of Peshawar",
+      "abbreviation": "UoP",
+      "city": "Peshawar",
+      "province": "KP",
+      "sector": "public",
+      "is_priority_target": true
+    },
+    {
+      "name": "University of Engineering & Technology Peshawar",
+      "abbreviation": "UET Peshawar",
+      "city": "Peshawar",
+      "province": "KP",
+      "sector": "public",
+      "is_priority_target": true
+    },
+    {
+      "name": "Bacha Khan University Charsadda",
+      "abbreviation": "BKUC",
+      "city": "Charsadda",
+      "province": "KP",
+      "sector": "public",
+      "is_charsadda": true,
+      "is_priority_kp": true
+    },
+    {
+      "name": "Islamia College Peshawar",
+      "abbreviation": "ICP",
+      "city": "Peshawar",
+      "province": "KP",
+      "sector": "public",
+      "is_priority_kp": true
+    },
+    {
+      "name": "Khyber Medical University",
+      "abbreviation": "KMU",
+      "city": "Peshawar",
+      "province": "KP",
+      "sector": "public",
+      "is_priority_kp": true
+    },
+    {
+      "name": "The University of Agriculture Peshawar",
+      "abbreviation": "AUP",
+      "city": "Peshawar",
+      "province": "KP",
+      "sector": "public",
+      "is_priority_kp": true
+    },
+    {
+      "name": "Abdul Wali Khan University Mardan",
+      "abbreviation": "AWKUM",
+      "city": "Mardan",
+      "province": "KP",
+      "sector": "public",
+      "is_priority_kp": true
+    },
+    {
+      "name": "Institute of Management Sciences Peshawar",
+      "abbreviation": "IMSciences",
+      "city": "Peshawar",
+      "province": "KP",
+      "sector": "public",
+      "notes": "IMSciences is an autonomous public-sector degree awarding institution established by the Government of Khyber Pakhtunkhwa. HEC categorizes it as Public Sector."
+    },
+    {
+      "name": "Kohat University of Science & Technology",
+      "abbreviation": "KUST",
+      "city": "Kohat",
+      "province": "KP",
+      "sector": "public"
+    },
+    {
+      "name": "University of Malakand",
+      "abbreviation": "UOM",
+      "city": "Chakdara",
+      "province": "KP",
+      "sector": "public"
+    },
+    {
+      "name": "University of Swat",
+      "abbreviation": "UOSwat",
+      "city": "Swat",
+      "province": "KP",
+      "sector": "public"
+    },
+    {
+      "name": "University of Haripur",
+      "abbreviation": "UOH",
+      "city": "Haripur",
+      "province": "KP",
+      "sector": "public"
+    },
+    {
+      "name": "Hazara University",
+      "abbreviation": "HU",
+      "city": "Mansehra",
+      "province": "KP",
+      "sector": "public"
+    },
+    {
+      "name": "Gomal University",
+      "abbreviation": "GU",
+      "city": "Dera Ismail Khan",
+      "province": "KP",
+      "sector": "public"
+    },
+    {
+      "name": "Khushal Khan Khattak University Karak",
+      "abbreviation": "KKKU",
+      "city": "Karak",
+      "province": "KP",
+      "sector": "public"
+    },
+    {
+      "name": "University of Buner",
+      "abbreviation": "UOBuner",
+      "city": "Buner",
+      "province": "KP",
+      "sector": "public"
+    },
+    {
+      "name": "University of Chitral",
+      "abbreviation": "UOC",
+      "city": "Chitral",
+      "province": "KP",
+      "sector": "public"
+    },
+    {
+      "name": "University of Lakki Marwat",
+      "abbreviation": "ULM",
+      "city": "Lakki Marwat",
+      "province": "KP",
+      "sector": "public"
+    },
+    {
+      "name": "FATA University",
+      "abbreviation": "FU",
+      "city": "FR Kohat",
+      "province": "KP",
+      "sector": "public"
+    },
+    {
+      "name": "National University of Sciences and Technology",
+      "abbreviation": "NUST",
+      "city": "Islamabad",
+      "province": "Federal",
+      "sector": "public"
+    },
+    {
+      "name": "Quaid-i-Azam University",
+      "abbreviation": "QAU",
+      "city": "Islamabad",
+      "province": "Federal",
+      "sector": "public"
+    },
+    {
+      "name": "Pakistan Institute of Engineering and Applied Sciences",
+      "abbreviation": "PIEAS",
+      "city": "Islamabad",
+      "province": "Federal",
+      "sector": "public"
+    },
+    {
+      "name": "COMSATS University Islamabad",
+      "abbreviation": "CUI",
+      "city": "Islamabad",
+      "province": "Federal",
+      "sector": "public"
+    }
+  ],
+  "private_universities": [
+    {
+      "name": "Abasyn University Peshawar",
+      "abbreviation": "Abasyn",
+      "city": "Peshawar",
+      "province": "KP",
+      "sector": "private",
+      "is_priority_target": true
+    },
+    {
+      "name": "CECOS University of Information Technology and Emerging Sciences",
+      "abbreviation": "CECOS",
+      "city": "Peshawar",
+      "province": "KP",
+      "sector": "private",
+      "is_priority_kp": true
+    },
+    {
+      "name": "Iqra National University",
+      "abbreviation": "INU",
+      "city": "Peshawar",
+      "province": "KP",
+      "sector": "private",
+      "is_priority_kp": true
+    },
+    {
+      "name": "City University of Science and Information Technology",
+      "abbreviation": "CUSIT",
+      "city": "Peshawar",
+      "province": "KP",
+      "sector": "private",
+      "is_priority_kp": true
+    },
+    {
+      "name": "Sarhad University of Science and Information Technology",
+      "abbreviation": "SUIT",
+      "city": "Peshawar",
+      "province": "KP",
+      "sector": "private",
+      "is_priority_kp": true
+    },
+    {
+      "name": "Gandhara University",
+      "abbreviation": "GU",
+      "city": "Peshawar",
+      "province": "KP",
+      "sector": "private"
+    },
+    {
+      "name": "Northern University",
+      "abbreviation": "NU",
+      "city": "Nowshera",
+      "province": "KP",
+      "sector": "private"
+    },
+    {
+      "name": "Ghulam Ishaq Khan Institute of Engineering Sciences and Technology",
+      "abbreviation": "GIKI",
+      "city": "Topi",
+      "province": "KP",
+      "sector": "private"
+    },
+    {
+      "name": "Qurtuba University of Science and Information Technology",
+      "abbreviation": "Qurtuba",
+      "city": "Dera Ismail Khan / Peshawar",
+      "province": "KP",
+      "sector": "private"
+    },
+    {
+      "name": "Preston University",
+      "abbreviation": "Preston",
+      "city": "Kohat",
+      "province": "KP",
+      "sector": "private"
+    },
+    {
+      "name": "Lahore University of Management Sciences",
+      "abbreviation": "LUMS",
+      "city": "Lahore",
+      "province": "Punjab",
+      "sector": "private"
+    },
+    {
+      "name": "Aga Khan University",
+      "abbreviation": "AKU",
+      "city": "Karachi",
+      "province": "Sindh",
+      "sector": "private"
+    },
+    {
+      "name": "Habib University",
+      "abbreviation": "HU",
+      "city": "Karachi",
+      "province": "Sindh",
+      "sector": "private"
+    }
+  ]
+}

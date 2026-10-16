@@ -1,0 +1,1246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Khyber Pakhtunkhwa Scholarships Intelligence: Public-Sector Universities</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #0284c7;
+      --primary-dark: #0369a1;
+      --primary-light: #e0f2fe;
+      --accent-charsadda: #b45309;
+      --accent-charsadda-bg: #fef3c7;
+      --accent-kp: #15803d;
+      --accent-kp-bg: #dcfce7;
+      --warning: #d97706;
+      --warning-bg: #fffbeb;
+      --danger: #b91c1c;
+      --danger-bg: #fee2e2;
+      --bg: #f8fafc;
+      --surface: #ffffff;
+      --text: #0f172a;
+      --text-muted: #64748b;
+      --border: #e2e8f0;
+      --border-dark: #cbd5e1;
+      --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+      --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+      --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+      --radius-sm: 6px;
+      --radius-md: 10px;
+      --radius-lg: 16px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+      padding: 24px;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .container {
+      max-width: 1320px;
+      margin: 0 auto;
+    }
+
+    /* Header styling */
+    header.report-header {
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+      color: #ffffff;
+      padding: 36px 32px;
+      border-radius: var(--radius-lg);
+      margin-bottom: 28px;
+      box-shadow: var(--shadow-lg);
+      position: relative;
+      overflow: hidden;
+    }
+    header.report-header::after {
+      content: "";
+      position: absolute;
+      top: -40%;
+      right: -10%;
+      width: 400px;
+      height: 400px;
+      background: radial-gradient(circle, rgba(2, 132, 199, 0.25) 0%, transparent 70%);
+      border-radius: 50%;
+      pointer-events: none;
+    }
+    .header-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+    .badge-report-type {
+      background-color: rgba(2, 132, 199, 0.2);
+      border: 1px solid rgba(56, 189, 248, 0.4);
+      color: #38bdf8;
+      font-size: 0.8rem;
+      font-weight: 600;
+      padding: 4px 12px;
+      border-radius: 9999px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      display: inline-block;
+      margin-bottom: 8px;
+    }
+    h1.report-title {
+      font-size: 2.1rem;
+      font-weight: 800;
+      letter-spacing: -0.025em;
+      line-height: 1.2;
+      color: #f8fafc;
+    }
+    .audience-tagline {
+      color: #cbd5e1;
+      font-size: 0.95rem;
+      margin-top: 8px;
+      max-width: 900px;
+    }
+    .header-meta {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-top: 20px;
+      padding-top: 18px;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      font-size: 0.85rem;
+      color: #94a3b8;
+    }
+    .meta-item strong {
+      color: #f1f5f9;
+      font-weight: 600;
+    }
+
+    /* Degraded alert */
+    .alert-degraded {
+      background-color: var(--danger-bg);
+      border: 1px solid #f87171;
+      color: var(--danger);
+      padding: 14px 20px;
+      border-radius: var(--radius-md);
+      margin-bottom: 24px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    /* Summary cards */
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      margin-bottom: 28px;
+    }
+    .summary-card {
+      background-color: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 20px;
+      box-shadow: var(--shadow-sm);
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+    .summary-card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+    }
+    .summary-card .label {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      font-weight: 600;
+      color: var(--text-muted);
+      letter-spacing: 0.05em;
+    }
+    .summary-card .value {
+      font-size: 2rem;
+      font-weight: 800;
+      color: var(--text);
+      margin-top: 4px;
+    }
+    .summary-card.highlight-charsadda {
+      border-left: 4px solid var(--accent-charsadda);
+    }
+    .summary-card.highlight-charsadda .value {
+      color: var(--accent-charsadda);
+    }
+    .summary-card.highlight-closing {
+      border-left: 4px solid var(--warning);
+    }
+    .summary-card.highlight-closing .value {
+      color: var(--warning);
+    }
+
+    /* Priority highlights box */
+    .priority-box {
+      background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
+      border: 1px solid #fde68a;
+      border-radius: var(--radius-lg);
+      padding: 24px 28px;
+      margin-bottom: 32px;
+      box-shadow: var(--shadow-sm);
+    }
+    .priority-box-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+    .priority-box-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #92400e;
+    }
+    .priority-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 16px;
+    }
+    .priority-item-card {
+      background: #ffffff;
+      border: 1px solid #fcd34d;
+      border-radius: var(--radius-md);
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    /* Section Headings */
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-top: 40px;
+      margin-bottom: 18px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid var(--border);
+    }
+    .section-title {
+      font-size: 1.45rem;
+      font-weight: 700;
+      color: #1e293b;
+    }
+    .section-badge {
+      background-color: var(--primary-light);
+      color: var(--primary-dark);
+      font-size: 0.8rem;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 9999px;
+    }
+
+    /* Tables */
+    .table-wrapper {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      overflow-x: auto;
+      box-shadow: var(--shadow-sm);
+      margin-bottom: 36px;
+    }
+    table.data-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 0.9rem;
+    }
+    table.data-table th {
+      background-color: #f1f5f9;
+      color: #334155;
+      font-weight: 700;
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--border);
+      white-space: nowrap;
+    }
+    table.data-table td {
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: middle;
+    }
+    table.data-table tr:hover {
+      background-color: #f8fafc;
+    }
+    table.data-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    /* Badges */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 3px 8px;
+      border-radius: 6px;
+      white-space: nowrap;
+      text-decoration: none;
+    }
+    .badge-charsadda {
+      background-color: var(--accent-charsadda-bg);
+      color: var(--accent-charsadda);
+      border: 1px solid #fde68a;
+    }
+    .badge-kp {
+      background-color: var(--accent-kp-bg);
+      color: var(--accent-kp);
+      border: 1px solid #bbf7d0;
+    }
+    .badge-target {
+      background-color: #f3e8ff;
+      color: #7e22ce;
+      border: 1px solid #e9d5ff;
+    }
+    .badge-open {
+      background-color: #dcfce7;
+      color: #15803d;
+    }
+    .badge-closing-soon {
+      background-color: #fee2e2;
+      color: #b91c1c;
+      font-weight: 700;
+    }
+    .badge-rolling {
+      background-color: #e0f2fe;
+      color: #0369a1;
+    }
+    .badge-upcoming {
+      background-color: #fef3c7;
+      color: #92400e;
+    }
+    .badge-closed {
+      background-color: #f1f5f9;
+      color: #64748b;
+    }
+    .badge-confirmed {
+      background-color: #d1fae5;
+      color: #065f46;
+      border: 1px solid #a7f3d0;
+    }
+    .badge-partner {
+      background-color: #e0e7ff;
+      color: #3730a3;
+      border: 1px solid #c7d2fe;
+    }
+    .badge-unverified {
+      background-color: #fef2f2;
+      color: #991b1b;
+      border: 1px solid #fecaca;
+    }
+    .badge-warning-eligibility {
+      background-color: #fff7ed;
+      color: #c2410c;
+      border: 1px solid #ffedd5;
+      font-size: 0.72rem;
+    }
+
+    /* Buttons */
+    .btn-apply {
+      display: inline-block;
+      background-color: var(--primary);
+      color: #ffffff;
+      font-weight: 600;
+      padding: 6px 14px;
+      border-radius: var(--radius-sm);
+      text-decoration: none;
+      font-size: 0.82rem;
+      transition: background-color 0.15s ease;
+      white-space: nowrap;
+    }
+    .btn-apply:hover {
+      background-color: var(--primary-dark);
+    }
+    .btn-broken {
+      background-color: #cbd5e1;
+      color: #475569;
+      pointer-events: none;
+    }
+
+    /* Cards */
+    .cards-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 20px;
+      margin-bottom: 36px;
+    }
+    .opp-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 24px;
+      box-shadow: var(--shadow-sm);
+      transition: border-color 0.15s ease;
+    }
+    .opp-card:hover {
+      border-color: var(--border-dark);
+    }
+    .opp-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 16px;
+      margin-bottom: 12px;
+    }
+    .opp-title {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: #0f172a;
+    }
+    .opp-sponsor {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      font-weight: 500;
+    }
+    .opp-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 12px 20px;
+      margin: 16px 0;
+      padding: 16px 0;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      font-size: 0.875rem;
+    }
+    .opp-field strong {
+      color: #334155;
+      display: block;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 2px;
+    }
+    .evidence-quote {
+      background-color: #f8fafc;
+      border-left: 3px solid var(--primary);
+      padding: 10px 14px;
+      font-size: 0.85rem;
+      font-style: italic;
+      color: #334155;
+      margin: 12px 0;
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+    }
+
+    /* Methodology & Footer */
+    footer.report-footer {
+      background-color: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 28px;
+      margin-top: 48px;
+      font-size: 0.875rem;
+      color: #475569;
+    }
+    footer h3 {
+      font-size: 1.1rem;
+      color: var(--text);
+      margin-bottom: 10px;
+    }
+
+    /* Print styles */
+    @media print {
+      body {
+        background: #ffffff;
+        color: #000000;
+        padding: 0;
+        font-size: 9pt;
+      }
+      header.report-header {
+        background: #f1f5f9;
+        color: #0f172a;
+        box-shadow: none;
+        border: 1px solid #cbd5e1;
+        padding: 16px;
+        page-break-after: avoid;
+      }
+      h1.report-title {
+        color: #0f172a;
+        font-size: 1.6rem;
+      }
+      .summary-card, .opp-card, .table-wrapper {
+        box-shadow: none;
+        border: 1px solid #cbd5e1;
+        page-break-inside: avoid;
+      }
+      .btn-apply {
+        display: none;
+      }
+      .priority-box {
+        background: #fef3c7;
+        border: 1px solid #d97706;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Header -->
+    <header class="report-header" id="reportHeader">
+      <div class="header-top">
+        <div>
+          <span class="badge-report-type">Public-Sector Universities (UoP, UET Peshawar, BKUC, KMU, AUP, AWKUM, IMSciences*)</span>
+          <h1 class="report-title">Khyber Pakhtunkhwa Scholarships Intelligence: Public-Sector Universities</h1>
+          <p class="audience-tagline">Students currently enrolled or seeking admission at Public-Sector HEC-Recognised Universities (Priority: University of Peshawar, UET Peshawar, Bacha Khan University Charsadda, ICP, KMU, AUP, AWKUM, IMSciences*)</p>
+        </div>
+      </div>
+      <div class="header-meta">
+        <div class="meta-item">Last Checked: <strong>2026-10-16 09:14 PKT</strong></div>
+        <div class="meta-item">Run ID: <strong>RUN-20261016-091400</strong></div>
+        <div class="meta-item">Sources Checked: <strong>7</strong></div>
+        <div class="meta-item">Opportunities: <strong>8</strong></div>
+      </div>
+    </header>
+
+    
+
+    <!-- Summary Metrics -->
+    <div class="summary-grid" id="summaryGrid">
+      <div class="summary-card">
+        <div class="label">Total Opportunities</div>
+        <div class="value">8</div>
+      </div>
+      <div class="summary-card">
+        <div class="label">New Since Yesterday</div>
+        <div class="value">1</div>
+      </div>
+      <div class="summary-card highlight-closing">
+        <div class="label">Closing in ≤ 7 Days</div>
+        <div class="value">0</div>
+      </div>
+      <div class="summary-card highlight-charsadda">
+        <div class="label">Charsadda Eligible</div>
+        <div class="value">3</div>
+      </div>
+      <div class="summary-card">
+        <div class="label">KP Eligible</div>
+        <div class="value">8</div>
+      </div>
+      <div class="summary-card">
+        <div class="label">Broken Links Flagged</div>
+        <div class="value">0</div>
+      </div>
+    </div>
+
+    <!-- Priority Highlights Box -->
+    <div class="priority-box" id="priorityHighlightsBox">
+      <div class="priority-box-header">
+        <span style="font-size: 1.4rem;">⭐</span>
+        <h2 class="priority-box-title">Priority Highlights (Charsadda District & Target University Opportunities)</h2>
+      </div>
+      <p style="font-size: 0.9rem; color: #78350f; margin-bottom: 14px;">
+        Special weight is given to opportunities specifically mentioning <strong>Charsadda district</strong>, <strong>Bacha Khan University Charsadda (BKUC)</strong>,
+        or target institutions (<strong>UoP / UET Peshawar</strong>).
+      </p>
+      <div class="priority-list">
+        
+            <div class="priority-item-card">
+              <div>
+                <div style="display: flex; gap: 6px; margin-bottom: 6px;"><span class='badge badge-charsadda'>Charsadda Priority</span> <span class='badge badge-target'>Target Institution</span></div>
+                <h4 style="font-size: 1rem; font-weight: 700; color: #1e293b; margin-bottom: 4px;">HEC Need Based Scholarship Programme 2026-27</h4>
+                <p style="font-size: 0.85rem; color: #64748b; margin-bottom: 8px;">Higher Education Commission (HEC) Pakistan</p>
+                <p style="font-size: 0.82rem; color: #334155;"><strong>Award:</strong> Full tuition fee coverage plus PKR 6,000 monthly living allowance</p>
+              </div>
+              <div style="margin-top: 12px; display: flex; justify-content: space-between; align-items: center;">
+                <span style="font-size: 0.8rem; font-weight: 600; color: #b45309;">Deadline: 2026-11-30</span>
+                <a href="https://ehsaas.hec.gov.pk/" target="_blank" rel="noopener" class="btn-apply">Apply Online &rarr;</a>
+              </div>
+            </div>
+            
+
+            <div class="priority-item-card">
+              <div>
+                <div style="display: flex; gap: 6px; margin-bottom: 6px;"><span class='badge badge-charsadda'>Charsadda Priority</span></div>
+                <h4 style="font-size: 1rem; font-weight: 700; color: #1e293b; margin-bottom: 4px;">Bacha Khan University Charsadda Deserving Student Support Fund</h4>
+                <p style="font-size: 0.85rem; color: #64748b; margin-bottom: 8px;">Bacha Khan University Charsadda (BKUC)</p>
+                <p style="font-size: 0.82rem; color: #334155;"><strong>Award:</strong> Up to 100% tuition fee waiver plus PKR 3,000 monthly stipend</p>
+              </div>
+              <div style="margin-top: 12px; display: flex; justify-content: space-between; align-items: center;">
+                <span style="font-size: 0.8rem; font-weight: 600; color: #b45309;">Deadline: 2026-10-31</span>
+                <a href="https://bkuc.edu.pk/financial-aid/apply" target="_blank" rel="noopener" class="btn-apply">Apply Online &rarr;</a>
+              </div>
+            </div>
+            
+
+            <div class="priority-item-card">
+              <div>
+                <div style="display: flex; gap: 6px; margin-bottom: 6px;"><span class='badge badge-target'>Target Institution</span></div>
+                <h4 style="font-size: 1rem; font-weight: 700; color: #1e293b; margin-bottom: 4px;">University of Peshawar Need-Based &amp; Fee Waiver Aid 2026-27</h4>
+                <p style="font-size: 0.85rem; color: #64748b; margin-bottom: 8px;">University of Peshawar Students Financial Aid Office</p>
+                <p style="font-size: 0.82rem; color: #334155;"><strong>Award:</strong> 50% to 100% tuition fee waiver</p>
+              </div>
+              <div style="margin-top: 12px; display: flex; justify-content: space-between; align-items: center;">
+                <span style="font-size: 0.8rem; font-weight: 600; color: #b45309;">Deadline: 2026-11-10</span>
+                <a href="https://www.uop.edu.pk/sfao/apply" target="_blank" rel="noopener" class="btn-apply">Apply Online &rarr;</a>
+              </div>
+            </div>
+            
+
+            <div class="priority-item-card">
+              <div>
+                <div style="display: flex; gap: 6px; margin-bottom: 6px;"><span class='badge badge-target'>Target Institution</span></div>
+                <h4 style="font-size: 1rem; font-weight: 700; color: #1e293b; margin-bottom: 4px;">UET Peshawar Directorate of Financial Aid Need-cum-Merit Scholarship</h4>
+                <p style="font-size: 0.85rem; color: #64748b; margin-bottom: 8px;">University of Engineering and Technology Peshawar</p>
+                <p style="font-size: 0.82rem; color: #334155;"><strong>Award:</strong> Full tuition fee reimbursement plus semester book allowance</p>
+              </div>
+              <div style="margin-top: 12px; display: flex; justify-content: space-between; align-items: center;">
+                <span style="font-size: 0.8rem; font-weight: 600; color: #b45309;">Deadline: 2026-11-20</span>
+                <a href="https://uetpeshawar.edu.pk/financial-aid/" target="_blank" rel="noopener" class="btn-apply">Apply Online &rarr;</a>
+              </div>
+            </div>
+            
+
+            <div class="priority-item-card">
+              <div>
+                <div style="display: flex; gap: 6px; margin-bottom: 6px;"><span class='badge badge-charsadda'>Charsadda Priority</span></div>
+                <h4 style="font-size: 1rem; font-weight: 700; color: #1e293b; margin-bottom: 4px;">Ihsan Trust Qarz-e-Hasna Facility for Higher Education</h4>
+                <p style="font-size: 0.85rem; color: #64748b; margin-bottom: 8px;">Ihsan Trust</p>
+                <p style="font-size: 0.82rem; color: #334155;"><strong>Award:</strong> 100% tuition fee loan paid directly to the university</p>
+              </div>
+              <div style="margin-top: 12px; display: flex; justify-content: space-between; align-items: center;">
+                <span style="font-size: 0.8rem; font-weight: 600; color: #b45309;">Deadline: Rolling / ongoing</span>
+                <a href="https://www.ihsantrust.org/apply-now/" target="_blank" rel="noopener" class="btn-apply">Apply Online &rarr;</a>
+              </div>
+            </div>
+            
+      </div>
+    </div>
+
+    <!-- Main Table Section -->
+    <div class="section-header">
+      <h2 class="section-title">Verified Active Opportunities</h2>
+      <span class="section-badge">8 Opportunities</span>
+    </div>
+    <div class="table-wrapper">
+      <table class="data-table" id="mainOpportunitiesTable">
+        <thead>
+          <tr>
+            <th>Opportunity & Sponsor</th>
+            <th>Status</th>
+            <th>Deadline</th>
+            <th>Priority Badges</th>
+            <th>Award / Benefits</th>
+            <th>Apply Link</th>
+            <th>Verification</th>
+          </tr>
+        </thead>
+        <tbody>
+          
+            <tr>
+              <td>
+                <div style="font-weight: 600; color: #0f172a;">HEC Need Based Scholarship Programme 2026-27</div>
+                <div style="font-size: 0.8rem; color: #64748b;">Higher Education Commission (HEC) Pakistan</div>
+                
+              </td>
+              <td><span class="badge badge-open">Open</span></td>
+              <td style="white-space: nowrap; font-size: 0.85rem; font-weight: 500;">
+                2026-11-30
+                
+              </td>
+              <td><div style="display: flex; flex-direction: column; gap: 4px;"><span class="badge badge-charsadda">Charsadda Priority</span> <span class="badge badge-kp">KP Domicile</span> <span class="badge badge-target">Target Uni</span></div></td>
+              <td style="font-size: 0.82rem; max-width: 250px;">Full tuition fee coverage plus PKR 6,000 monthly living allowance</td>
+              <td><a href="https://ehsaas.hec.gov.pk/" target="_blank" rel="noopener" class="btn-apply">Apply Online &rarr;</a></td>
+              <td><span class="badge badge-confirmed">Confirmed (Tier 1)</span></td>
+            </tr>
+            
+
+            <tr>
+              <td>
+                <div style="font-weight: 600; color: #0f172a;">Bacha Khan University Charsadda Deserving Student Support Fund</div>
+                <div style="font-size: 0.8rem; color: #64748b;">Bacha Khan University Charsadda (BKUC)</div>
+                
+              </td>
+              <td><span class="badge badge-open">Open</span></td>
+              <td style="white-space: nowrap; font-size: 0.85rem; font-weight: 500;">
+                2026-10-31
+                
+              </td>
+              <td><div style="display: flex; flex-direction: column; gap: 4px;"><span class="badge badge-charsadda">Charsadda Priority</span> <span class="badge badge-kp">KP Domicile</span></div></td>
+              <td style="font-size: 0.82rem; max-width: 250px;">Up to 100% tuition fee waiver plus PKR 3,000 monthly stipend</td>
+              <td><a href="https://bkuc.edu.pk/financial-aid/apply" target="_blank" rel="noopener" class="btn-apply">Apply Online &rarr;</a></td>
+              <td><span class="badge badge-confirmed">Confirmed (Tier 1)</span></td>
+            </tr>
+            
+
+            <tr>
+              <td>
+                <div style="font-weight: 600; color: #0f172a;">University of Peshawar Need-Based &amp; Fee Waiver Aid 2026-27</div>
+                <div style="font-size: 0.8rem; color: #64748b;">University of Peshawar Students Financial Aid Office</div>
+                
+              </td>
+              <td><span class="badge badge-open">Open</span></td>
+              <td style="white-space: nowrap; font-size: 0.85rem; font-weight: 500;">
+                2026-11-10
+                
+              </td>
+              <td><div style="display: flex; flex-direction: column; gap: 4px;"><span class="badge badge-kp">KP Domicile</span> <span class="badge badge-target">Target Uni</span></div></td>
+              <td style="font-size: 0.82rem; max-width: 250px;">50% to 100% tuition fee waiver</td>
+              <td><a href="https://www.uop.edu.pk/sfao/apply" target="_blank" rel="noopener" class="btn-apply">Apply Online &rarr;</a></td>
+              <td><span class="badge badge-confirmed">Confirmed (Tier 1)</span></td>
+            </tr>
+            
+
+            <tr>
+              <td>
+                <div style="font-weight: 600; color: #0f172a;">UET Peshawar Directorate of Financial Aid Need-cum-Merit Scholarship</div>
+                <div style="font-size: 0.8rem; color: #64748b;">University of Engineering and Technology Peshawar</div>
+                
+              </td>
+              <td><span class="badge badge-open">Open</span></td>
+              <td style="white-space: nowrap; font-size: 0.85rem; font-weight: 500;">
+                2026-11-20
+                
+              </td>
+              <td><div style="display: flex; flex-direction: column; gap: 4px;"><span class="badge badge-kp">KP Domicile</span> <span class="badge badge-target">Target Uni</span></div></td>
+              <td style="font-size: 0.82rem; max-width: 250px;">Full tuition fee reimbursement plus semester book allowance</td>
+              <td><a href="https://uetpeshawar.edu.pk/financial-aid/" target="_blank" rel="noopener" class="btn-apply">Apply Online &rarr;</a></td>
+              <td><span class="badge badge-confirmed">Confirmed (Tier 1)</span></td>
+            </tr>
+            
+
+            <tr>
+              <td>
+                <div style="font-weight: 600; color: #0f172a;">IMSciences Peshawar Need-Based &amp; Financial Assistance Scheme</div>
+                <div style="font-size: 0.8rem; color: #64748b;">Institute of Management Sciences (IMSciences) Peshawar</div>
+                
+              </td>
+              <td><span class="badge badge-open">Open</span></td>
+              <td style="white-space: nowrap; font-size: 0.85rem; font-weight: 500;">
+                2026-11-20
+                
+              </td>
+              <td><div style="display: flex; flex-direction: column; gap: 4px;"><span class="badge badge-kp">KP Domicile</span></div></td>
+              <td style="font-size: 0.82rem; max-width: 250px;">Up to 100% tuition fee waiver plus semester assistance</td>
+              <td><a href="https://imsciences.edu.pk/financial-aid/" target="_blank" rel="noopener" class="btn-apply">Apply Online &rarr;</a></td>
+              <td><span class="badge badge-confirmed">Confirmed (Tier 1)</span></td>
+            </tr>
+            
+
+            <tr>
+              <td>
+                <div style="font-weight: 600; color: #0f172a;">KPEF Chief Minister Higher Education Scholarship Scheme 2026</div>
+                <div style="font-size: 0.8rem; color: #64748b;">Khyber Pakhtunkhwa Education Foundation (KPEF)</div>
+                
+              </td>
+              <td><span class="badge badge-open">Open</span></td>
+              <td style="white-space: nowrap; font-size: 0.85rem; font-weight: 500;">
+                2026-11-25
+                
+              </td>
+              <td><div style="display: flex; flex-direction: column; gap: 4px;"><span class="badge badge-kp">KP Domicile</span></div></td>
+              <td style="font-size: 0.82rem; max-width: 250px;">Full tuition fee and PKR 5,000 monthly stipend</td>
+              <td><a href="https://scholarships.kpitb.online/" target="_blank" rel="noopener" class="btn-apply">Apply Online &rarr;</a></td>
+              <td><span class="badge badge-confirmed">Confirmed (Tier 1)</span></td>
+            </tr>
+            
+
+            <tr>
+              <td>
+                <div style="font-weight: 600; color: #0f172a;">Ihsan Trust Qarz-e-Hasna Facility for Higher Education</div>
+                <div style="font-size: 0.8rem; color: #64748b;">Ihsan Trust</div>
+                
+              </td>
+              <td><span class="badge badge-rolling">Rolling / ongoing</span></td>
+              <td style="white-space: nowrap; font-size: 0.85rem; font-weight: 500;">
+                Rolling / ongoing
+                
+              </td>
+              <td><div style="display: flex; flex-direction: column; gap: 4px;"><span class="badge badge-charsadda">Charsadda Priority</span> <span class="badge badge-kp">KP Domicile</span></div></td>
+              <td style="font-size: 0.82rem; max-width: 250px;">100% tuition fee loan paid directly to the university</td>
+              <td><a href="https://www.ihsantrust.org/apply-now/" target="_blank" rel="noopener" class="btn-apply">Apply Online &rarr;</a></td>
+              <td><span class="badge badge-confirmed">Confirmed (Tier 1)</span></td>
+            </tr>
+            
+
+            <tr>
+              <td>
+                <div style="font-weight: 600; color: #0f172a;">Ihsan Trust Qarz-e-Hasna Interest-Free Student Loan</div>
+                <div style="font-size: 0.8rem; color: #64748b;">Ihsan Trust</div>
+                
+              </td>
+              <td><span class="badge badge-rolling">Rolling / ongoing</span></td>
+              <td style="white-space: nowrap; font-size: 0.85rem; font-weight: 500;">
+                Rolling / ongoing
+                
+              </td>
+              <td><div style="display: flex; flex-direction: column; gap: 4px;"><span class="badge badge-kp">KP Domicile</span></div></td>
+              <td style="font-size: 0.82rem; max-width: 250px;">100% university tuition fee paid directly to the university</td>
+              <td><a href="https://www.ihsantrust.org/education-loan/" target="_blank" rel="noopener" class="btn-apply">Apply Online &rarr;</a></td>
+              <td><span class="badge badge-confirmed">Confirmed (Tier 1)</span></td>
+            </tr>
+            
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Detailed Opportunity Cards -->
+    <div class="section-header">
+      <h2 class="section-title">Complete Opportunity Details</h2>
+      <span class="section-badge">Full Specification Cards</span>
+    </div>
+    <div class="cards-grid" id="opportunityDetailCards">
+      
+            <div class="opp-card" id="SCH-202610-0002">
+              <div class="opp-card-header">
+                <div>
+                  <div style="display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 6px;">
+                    <span class="badge badge-charsadda">Charsadda Priority</span> <span class="badge badge-kp">KP Domicile</span> <span class="badge badge-target">Target Uni</span>
+                    <span class="badge badge-open">Open</span>
+                    <span class="badge badge-confirmed">Confirmed (Tier 1)</span>
+                  </div>
+                  <h3 class="opp-title">HEC Need Based Scholarship Programme 2026-27</h3>
+                  <div class="opp-sponsor">Sponsor: <strong>Higher Education Commission (HEC) Pakistan</strong> (federal govt)</div>
+                </div>
+                <div><a href="https://ehsaas.hec.gov.pk/" target="_blank" rel="noopener" class="btn-apply">Apply Online &rarr;</a></div>
+              </div>
+
+              <div class="opp-grid">
+                <div class="opp-field"><strong>Eligible Universities:</strong> All HEC-recognized public sector universities in Pakistan including UoP, UET Peshawar, BKUC, KMU, AUP, AWKUM (public)</div>
+                <div class="opp-field"><strong>Degree Levels:</strong> Undergraduate (4-5 years)</div>
+                <div class="opp-field"><strong>Fields of Study:</strong> All disciplines</div>
+                <div class="opp-field"><strong>Academic Years:</strong> 1st and 2nd semester enrolled students</div>
+                <div class="opp-field"><strong>Domicile Requirements:</strong> All Pakistan including Khyber Pakhtunkhwa</div>
+                <div class="opp-field"><strong>District / Tehsil:</strong> not stated (All KP districts including Charsadda)</div>
+                <div class="opp-field"><strong>KP / Charsadda Eligibility:</strong> KP: yes | Charsadda: yes</div>
+                <div class="opp-field"><strong>Academic Threshold:</strong> not stated</div>
+                <div class="opp-field"><strong>Family Income Cap:</strong> PKR 45,000 per month family income</div>
+                <div class="opp-field"><strong>Need Criteria:</strong> Financially disadvantaged students from rural and underprivileged backgrounds</div>
+                <div class="opp-field"><strong>Merit Criteria:</strong> Enrolled in regular program with satisfactory academic progress</div>
+                <div class="opp-field"><strong>Gender / Age Limit:</strong> Gender: all | Age: not stated</div>
+                <div class="opp-field"><strong>Award Amount:</strong> Full tuition fee coverage plus PKR 6,000 monthly living allowance</div>
+                <div class="opp-field"><strong>Benefits:</strong> 100% tuition fee waiver, monthly stipend, book allowance</div>
+                <div class="opp-field"><strong>Duration & Awards:</strong> Duration: Complete duration of degree program | Slots: Over 10,000 slots nationally</div>
+                <div class="opp-field"><strong>Application Procedure:</strong> Apply online via HEC portal and submit verified hardcopy to University SFAO</div>
+                <div class="opp-field"><strong>Required Documents:</strong> Salary slip or income certificate, CNIC of applicant and father, electricity bills (last 6 months), educational transcripts</div>
+                <div class="opp-field"><strong>Attestation Rules:</strong> Income certificate attested by relevant Revenue Authority / Tehsildar</div>
+                <div class="opp-field"><strong>Important Dates:</strong> Open: 2026-09-15 | Deadline: 2026-11-30 | Hardcopy: 2026-12-07</div>
+                <div class="opp-field"><strong>Cycle & Contact:</strong> Cycle: 2026-27 | Email: financial-aid@hec.gov.pk | Tel: +92-51-111-119-432</div>
+              </div>
+
+              <div class='evidence-quote'><strong>Verbatim Official Quote:</strong> &ldquo;HEC Need Based Scholarships provide complete tuition and monthly stipends for deserving undergraduate students in public universities across Pakistan including Khyber Pakhtunkhwa.&rdquo;</div>
+
+              <div style="font-size: 0.8rem; color: #64748b; margin-top: 10px; display: flex; justify-content: space-between; flex-wrap: wrap;">
+                <div>First Seen: <strong>2026-09-15</strong> | Last Verified: <strong>2026-10-16</strong></div>
+                <div>Source: <a href="https://www.hec.gov.pk/english/scholarshipsgrants/NBS/" target="_blank" rel="noopener" style="color: var(--primary);">https://www.hec.gov.pk/english/scholarshipsgrants/NBS/...</a></div>
+              </div>
+            </div>
+            
+
+            <div class="opp-card" id="SCH-202610-0001">
+              <div class="opp-card-header">
+                <div>
+                  <div style="display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 6px;">
+                    <span class="badge badge-charsadda">Charsadda Priority</span> <span class="badge badge-kp">KP Domicile</span>
+                    <span class="badge badge-open">Open</span>
+                    <span class="badge badge-confirmed">Confirmed (Tier 1)</span>
+                  </div>
+                  <h3 class="opp-title">Bacha Khan University Charsadda Deserving Student Support Fund</h3>
+                  <div class="opp-sponsor">Sponsor: <strong>Bacha Khan University Charsadda (BKUC)</strong> (university)</div>
+                </div>
+                <div><a href="https://bkuc.edu.pk/financial-aid/apply" target="_blank" rel="noopener" class="btn-apply">Apply Online &rarr;</a></div>
+              </div>
+
+              <div class="opp-grid">
+                <div class="opp-field"><strong>Eligible Universities:</strong> Bacha Khan University Charsadda (public)</div>
+                <div class="opp-field"><strong>Degree Levels:</strong> Undergraduate, Master&#x27;s</div>
+                <div class="opp-field"><strong>Fields of Study:</strong> All regular departments</div>
+                <div class="opp-field"><strong>Academic Years:</strong> All enrolled academic years</div>
+                <div class="opp-field"><strong>Domicile Requirements:</strong> Charsadda district domicile preferred; open to all KP domicile students</div>
+                <div class="opp-field"><strong>District / Tehsil:</strong> Charsadda (Settled district Charsadda)</div>
+                <div class="opp-field"><strong>KP / Charsadda Eligibility:</strong> KP: yes | Charsadda: yes</div>
+                <div class="opp-field"><strong>Academic Threshold:</strong> 2.50 CGPA</div>
+                <div class="opp-field"><strong>Family Income Cap:</strong> PKR 45,000 per month</div>
+                <div class="opp-field"><strong>Need Criteria:</strong> Low family income with priority to orphans and daily-wage dependents</div>
+                <div class="opp-field"><strong>Merit Criteria:</strong> Minimum 2.50 CGPA or 50% marks in previous examination</div>
+                <div class="opp-field"><strong>Gender / Age Limit:</strong> Gender: all | Age: not stated</div>
+                <div class="opp-field"><strong>Award Amount:</strong> Up to 100% tuition fee waiver plus PKR 3,000 monthly stipend</div>
+                <div class="opp-field"><strong>Benefits:</strong> Tuition waiver and semester stipend</div>
+                <div class="opp-field"><strong>Duration & Awards:</strong> Duration: One academic semester, renewable based on academic standing | Slots: 150 awards per cycle</div>
+                <div class="opp-field"><strong>Application Procedure:</strong> Submit prescribed financial aid form to Students Financial Aid Office (SFAO) BKUC</div>
+                <div class="opp-field"><strong>Required Documents:</strong> CNIC/B-Form copy, Father&#x27;s death/salary certificate, last semester transcript, utility bill copies</div>
+                <div class="opp-field"><strong>Attestation Rules:</strong> Attested by Gazetted Officer or Village Council Chairman</div>
+                <div class="opp-field"><strong>Important Dates:</strong> Open: 2026-10-01 | Deadline: 2026-10-31 | Hardcopy: 2026-11-05</div>
+                <div class="opp-field"><strong>Cycle & Contact:</strong> Cycle: 2026-27 | Email: sfao@bkuc.edu.pk | Tel: +92-91-6540064</div>
+              </div>
+
+              <div class='evidence-quote'><strong>Verbatim Official Quote:</strong> &ldquo;Applications are invited from deserving students of BKUC for Need-cum-Merit Financial Aid. Special consideration for Charsadda district domicile holders.&rdquo;</div>
+
+              <div style="font-size: 0.8rem; color: #64748b; margin-top: 10px; display: flex; justify-content: space-between; flex-wrap: wrap;">
+                <div>First Seen: <strong>2026-10-01</strong> | Last Verified: <strong>2026-10-16</strong></div>
+                <div>Source: <a href="https://bkuc.edu.pk/financial-aid" target="_blank" rel="noopener" style="color: var(--primary);">https://bkuc.edu.pk/financial-aid...</a></div>
+              </div>
+            </div>
+            
+
+            <div class="opp-card" id="SCH-202610-0006">
+              <div class="opp-card-header">
+                <div>
+                  <div style="display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 6px;">
+                    <span class="badge badge-kp">KP Domicile</span> <span class="badge badge-target">Target Uni</span>
+                    <span class="badge badge-open">Open</span>
+                    <span class="badge badge-confirmed">Confirmed (Tier 1)</span>
+                  </div>
+                  <h3 class="opp-title">University of Peshawar Need-Based &amp; Fee Waiver Aid 2026-27</h3>
+                  <div class="opp-sponsor">Sponsor: <strong>University of Peshawar Students Financial Aid Office</strong> (university)</div>
+                </div>
+                <div><a href="https://www.uop.edu.pk/sfao/apply" target="_blank" rel="noopener" class="btn-apply">Apply Online &rarr;</a></div>
+              </div>
+
+              <div class="opp-grid">
+                <div class="opp-field"><strong>Eligible Universities:</strong> University of Peshawar (UoP) (public)</div>
+                <div class="opp-field"><strong>Degree Levels:</strong> Undergraduate (BS 4-Year), Master&#x27;s, MPhil, PhD</div>
+                <div class="opp-field"><strong>Fields of Study:</strong> All disciplines and constituent colleges</div>
+                <div class="opp-field"><strong>Academic Years:</strong> Newly admitted and continuing students</div>
+                <div class="opp-field"><strong>Domicile Requirements:</strong> Khyber Pakhtunkhwa domicile holders (including Peshawar Division &amp; Charsadda)</div>
+                <div class="opp-field"><strong>District / Tehsil:</strong> All KP districts (KP-wide)</div>
+                <div class="opp-field"><strong>KP / Charsadda Eligibility:</strong> KP: yes | Charsadda: yes</div>
+                <div class="opp-field"><strong>Academic Threshold:</strong> 2.20 CGPA</div>
+                <div class="opp-field"><strong>Family Income Cap:</strong> PKR 50,000 per month</div>
+                <div class="opp-field"><strong>Need Criteria:</strong> Demonstrated financial hardship certified by income documents</div>
+                <div class="opp-field"><strong>Merit Criteria:</strong> Satisfactory academic performance and attendance</div>
+                <div class="opp-field"><strong>Gender / Age Limit:</strong> Gender: all | Age: not stated</div>
+                <div class="opp-field"><strong>Award Amount:</strong> 50% to 100% tuition fee waiver</div>
+                <div class="opp-field"><strong>Benefits:</strong> Tuition fee waiver and examination fee support</div>
+                <div class="opp-field"><strong>Duration & Awards:</strong> Duration: One academic year | Slots: 400 slots</div>
+                <div class="opp-field"><strong>Application Procedure:</strong> Submit completed SFAO form with supporting documents to Departmental Financial Aid Committee</div>
+                <div class="opp-field"><strong>Required Documents:</strong> Salary slip or Tehsildar income certificate, utility bills, CNIC/B-Form</div>
+                <div class="opp-field"><strong>Attestation Rules:</strong> Income certificate attested by Tehsildar or Class-I Gazetted Officer</div>
+                <div class="opp-field"><strong>Important Dates:</strong> Open: 2026-09-20 | Deadline: 2026-11-10 | Hardcopy: 2026-11-15</div>
+                <div class="opp-field"><strong>Cycle & Contact:</strong> Cycle: 2026-27 | Email: sfao@uop.edu.pk | Tel: +92-91-9216701</div>
+              </div>
+
+              <div class='evidence-quote'><strong>Verbatim Official Quote:</strong> &ldquo;University of Peshawar SFAO announces Need-Based fee concessions for deserving students of Khyber Pakhtunkhwa enrolled in regular undergraduate and postgraduate programs.&rdquo;</div>
+
+              <div style="font-size: 0.8rem; color: #64748b; margin-top: 10px; display: flex; justify-content: space-between; flex-wrap: wrap;">
+                <div>First Seen: <strong>2026-09-20</strong> | Last Verified: <strong>2026-10-16</strong></div>
+                <div>Source: <a href="https://www.uop.edu.pk/sfao/" target="_blank" rel="noopener" style="color: var(--primary);">https://www.uop.edu.pk/sfao/...</a></div>
+              </div>
+            </div>
+            
+
+            <div class="opp-card" id="SCH-202610-0007">
+              <div class="opp-card-header">
+                <div>
+                  <div style="display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 6px;">
+                    <span class="badge badge-kp">KP Domicile</span> <span class="badge badge-target">Target Uni</span>
+                    <span class="badge badge-open">Open</span>
+                    <span class="badge badge-confirmed">Confirmed (Tier 1)</span>
+                  </div>
+                  <h3 class="opp-title">UET Peshawar Directorate of Financial Aid Need-cum-Merit Scholarship</h3>
+                  <div class="opp-sponsor">Sponsor: <strong>University of Engineering and Technology Peshawar</strong> (university)</div>
+                </div>
+                <div><a href="https://uetpeshawar.edu.pk/financial-aid/" target="_blank" rel="noopener" class="btn-apply">Apply Online &rarr;</a></div>
+              </div>
+
+              <div class="opp-grid">
+                <div class="opp-field"><strong>Eligible Universities:</strong> UET Peshawar (Main &amp; satellite campuses) (public)</div>
+                <div class="opp-field"><strong>Degree Levels:</strong> BSc Engineering, Computer Science, Architecture</div>
+                <div class="opp-field"><strong>Fields of Study:</strong> Engineering and Allied Disciplines</div>
+                <div class="opp-field"><strong>Academic Years:</strong> 1st to 8th semesters</div>
+                <div class="opp-field"><strong>Domicile Requirements:</strong> Khyber Pakhtunkhwa domicile holders</div>
+                <div class="opp-field"><strong>District / Tehsil:</strong> All KP settled districts including Charsadda (KP-wide)</div>
+                <div class="opp-field"><strong>KP / Charsadda Eligibility:</strong> KP: yes | Charsadda: yes</div>
+                <div class="opp-field"><strong>Academic Threshold:</strong> 2.50 CGPA</div>
+                <div class="opp-field"><strong>Family Income Cap:</strong> PKR 55,000 per month</div>
+                <div class="opp-field"><strong>Need Criteria:</strong> Low household income verification</div>
+                <div class="opp-field"><strong>Merit Criteria:</strong> Minimum 2.50 CGPA in previous semester</div>
+                <div class="opp-field"><strong>Gender / Age Limit:</strong> Gender: all | Age: not stated</div>
+                <div class="opp-field"><strong>Award Amount:</strong> Full tuition fee reimbursement plus semester book allowance</div>
+                <div class="opp-field"><strong>Benefits:</strong> Tuition fee and book allowance</div>
+                <div class="opp-field"><strong>Duration & Awards:</strong> Duration: 1 academic year | Slots: 200 slots</div>
+                <div class="opp-field"><strong>Application Procedure:</strong> Online application via UET CMS student portal followed by hardcopy submission to DFA</div>
+                <div class="opp-field"><strong>Required Documents:</strong> Income certificate, electricity bill, CNIC, academic DMC</div>
+                <div class="opp-field"><strong>Attestation Rules:</strong> Attested by Class-I Gazetted Officer</div>
+                <div class="opp-field"><strong>Important Dates:</strong> Open: 2026-10-01 | Deadline: 2026-11-20 | Hardcopy: 2026-11-25</div>
+                <div class="opp-field"><strong>Cycle & Contact:</strong> Cycle: 2026-27 | Email: dfa@uetpeshawar.edu.pk | Tel: +92-91-9216796</div>
+              </div>
+
+              <div class='evidence-quote'><strong>Verbatim Official Quote:</strong> &ldquo;UET Peshawar invites applications from undergraduate engineering students belonging to KP for institutional Need-cum-Merit scholarships.&rdquo;</div>
+
+              <div style="font-size: 0.8rem; color: #64748b; margin-top: 10px; display: flex; justify-content: space-between; flex-wrap: wrap;">
+                <div>First Seen: <strong>2026-10-01</strong> | Last Verified: <strong>2026-10-16</strong></div>
+                <div>Source: <a href="https://uetpeshawar.edu.pk/financial-aid/" target="_blank" rel="noopener" style="color: var(--primary);">https://uetpeshawar.edu.pk/financial-aid/...</a></div>
+              </div>
+            </div>
+            
+
+            <div class="opp-card" id="SCH-202610-0009">
+              <div class="opp-card-header">
+                <div>
+                  <div style="display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 6px;">
+                    <span class="badge badge-kp">KP Domicile</span>
+                    <span class="badge badge-open">Open</span>
+                    <span class="badge badge-confirmed">Confirmed (Tier 1)</span>
+                  </div>
+                  <h3 class="opp-title">IMSciences Peshawar Need-Based &amp; Financial Assistance Scheme</h3>
+                  <div class="opp-sponsor">Sponsor: <strong>Institute of Management Sciences (IMSciences) Peshawar</strong> (university)</div>
+                </div>
+                <div><a href="https://imsciences.edu.pk/financial-aid/" target="_blank" rel="noopener" class="btn-apply">Apply Online &rarr;</a></div>
+              </div>
+
+              <div class="opp-grid">
+                <div class="opp-field"><strong>Eligible Universities:</strong> IMSciences Peshawar (public)</div>
+                <div class="opp-field"><strong>Degree Levels:</strong> BBA, BS Computer Science, BS Economics, MBA, MS</div>
+                <div class="opp-field"><strong>Fields of Study:</strong> Management Sciences, Computer Science, Economics, Development Studies</div>
+                <div class="opp-field"><strong>Academic Years:</strong> All semesters</div>
+                <div class="opp-field"><strong>Domicile Requirements:</strong> Khyber Pakhtunkhwa domicile preferred; open to all Pakistani nationals</div>
+                <div class="opp-field"><strong>District / Tehsil:</strong> All KP districts (KP-wide)</div>
+                <div class="opp-field"><strong>KP / Charsadda Eligibility:</strong> KP: yes | Charsadda: yes</div>
+                <div class="opp-field"><strong>Academic Threshold:</strong> 2.50 CGPA</div>
+                <div class="opp-field"><strong>Family Income Cap:</strong> PKR 50,000 per month</div>
+                <div class="opp-field"><strong>Need Criteria:</strong> Financially constrained background verified through Grants &amp; Financial Aid Committee</div>
+                <div class="opp-field"><strong>Merit Criteria:</strong> Minimum 2.50 CGPA and satisfactory conduct</div>
+                <div class="opp-field"><strong>Gender / Age Limit:</strong> Gender: all | Age: not stated</div>
+                <div class="opp-field"><strong>Award Amount:</strong> Up to 100% tuition fee waiver plus semester assistance</div>
+                <div class="opp-field"><strong>Benefits:</strong> Tuition fee waiver</div>
+                <div class="opp-field"><strong>Duration & Awards:</strong> Duration: 1 academic year (renewable) | Slots: 250 awards</div>
+                <div class="opp-field"><strong>Application Procedure:</strong> Apply through IMSciences Grants Office portal and submit physical dossier</div>
+                <div class="opp-field"><strong>Required Documents:</strong> Income certificate, utility bills, CNIC/B-Form, fee challan copy</div>
+                <div class="opp-field"><strong>Attestation Rules:</strong> Attested by Class-I Gazetted Officer</div>
+                <div class="opp-field"><strong>Important Dates:</strong> Open: 2026-10-01 | Deadline: 2026-11-20 | Hardcopy: 2026-11-25</div>
+                <div class="opp-field"><strong>Cycle & Contact:</strong> Cycle: 2026-27 | Email: grants@imsciences.edu.pk | Tel: +92-91-5861024</div>
+              </div>
+
+              <div class='evidence-quote'><strong>Verbatim Official Quote:</strong> &ldquo;IMSciences Grants Office provides substantial financial assistance and fee concessions to needy and talented students from Khyber Pakhtunkhwa.&rdquo;</div>
+
+              <div style="font-size: 0.8rem; color: #64748b; margin-top: 10px; display: flex; justify-content: space-between; flex-wrap: wrap;">
+                <div>First Seen: <strong>2026-10-01</strong> | Last Verified: <strong>2026-10-16</strong></div>
+                <div>Source: <a href="https://imsciences.edu.pk/financial-aid/" target="_blank" rel="noopener" style="color: var(--primary);">https://imsciences.edu.pk/financial-aid/...</a></div>
+              </div>
+            </div>
+            
+
+            <div class="opp-card" id="SCH-202610-0008">
+              <div class="opp-card-header">
+                <div>
+                  <div style="display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 6px;">
+                    <span class="badge badge-kp">KP Domicile</span>
+                    <span class="badge badge-open">Open</span>
+                    <span class="badge badge-confirmed">Confirmed (Tier 1)</span>
+                  </div>
+                  <h3 class="opp-title">KPEF Chief Minister Higher Education Scholarship Scheme 2026</h3>
+                  <div class="opp-sponsor">Sponsor: <strong>Khyber Pakhtunkhwa Education Foundation (KPEF)</strong> (provincial govt)</div>
+                </div>
+                <div><a href="https://scholarships.kpitb.online/" target="_blank" rel="noopener" class="btn-apply">Apply Online &rarr;</a></div>
+              </div>
+
+              <div class="opp-grid">
+                <div class="opp-field"><strong>Eligible Universities:</strong> All HEC-recognized public and private universities in KP and top national institutions (both)</div>
+                <div class="opp-field"><strong>Degree Levels:</strong> BS, MS, MPhil</div>
+                <div class="opp-field"><strong>Fields of Study:</strong> Science, Technology, Engineering, Mathematics, Management, Social Sciences</div>
+                <div class="opp-field"><strong>Academic Years:</strong> 1st and 2nd semester enrolled students</div>
+                <div class="opp-field"><strong>Domicile Requirements:</strong> Khyber Pakhtunkhwa domicile mandatory</div>
+                <div class="opp-field"><strong>District / Tehsil:</strong> All KP districts (special quota for backward &amp; rural districts including Charsadda) (KP provincial territory)</div>
+                <div class="opp-field"><strong>KP / Charsadda Eligibility:</strong> KP: yes | Charsadda: yes</div>
+                <div class="opp-field"><strong>Academic Threshold:</strong> 3.00 CGPA / 65% marks</div>
+                <div class="opp-field"><strong>Family Income Cap:</strong> PKR 60,000 per month</div>
+                <div class="opp-field"><strong>Need Criteria:</strong> Deserving students with verified household income status</div>
+                <div class="opp-field"><strong>Merit Criteria:</strong> Minimum 65% marks in Intermediate or 3.00 CGPA</div>
+                <div class="opp-field"><strong>Gender / Age Limit:</strong> Gender: all | Age: 28 years for BS, 32 years for MS/MPhil</div>
+                <div class="opp-field"><strong>Award Amount:</strong> Full tuition fee and PKR 5,000 monthly stipend</div>
+                <div class="opp-field"><strong>Benefits:</strong> Tuition fees paid directly to university and stipend</div>
+                <div class="opp-field"><strong>Duration & Awards:</strong> Duration: Standard program duration | Slots: 500 awards across KP</div>
+                <div class="opp-field"><strong>Application Procedure:</strong> Apply online through KP Scholarship Portal (scholarships.kpitb.online) or KPEF website</div>
+                <div class="opp-field"><strong>Required Documents:</strong> KP Domicile certificate, CNIC/B-Form, academic transcripts, parent income certificate</div>
+                <div class="opp-field"><strong>Attestation Rules:</strong> Documents must be attested by a Gazetted Officer (BPS-17 or above)</div>
+                <div class="opp-field"><strong>Important Dates:</strong> Open: 2026-10-10 | Deadline: 2026-11-25 | Hardcopy: 2026-11-30</div>
+                <div class="opp-field"><strong>Cycle & Contact:</strong> Cycle: 2026-27 | Email: scholarships@kpef.edu.pk | Tel: +92-91-9211789</div>
+              </div>
+
+              <div class='evidence-quote'><strong>Verbatim Official Quote:</strong> &ldquo;KPEF invites applications from KP domicile holders for undergraduate and graduate scholarships tenable at recognized universities.&rdquo;</div>
+
+              <div style="font-size: 0.8rem; color: #64748b; margin-top: 10px; display: flex; justify-content: space-between; flex-wrap: wrap;">
+                <div>First Seen: <strong>2026-10-10</strong> | Last Verified: <strong>2026-10-16</strong></div>
+                <div>Source: <a href="https://ef.kp.gov.pk/" target="_blank" rel="noopener" style="color: var(--primary);">https://ef.kp.gov.pk/...</a></div>
+              </div>
+            </div>
+            
+
+            <div class="opp-card" id="SCH-202610-0004">
+              <div class="opp-card-header">
+                <div>
+                  <div style="display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 6px;">
+                    <span class="badge badge-charsadda">Charsadda Priority</span> <span class="badge badge-kp">KP Domicile</span>
+                    <span class="badge badge-rolling">Rolling / ongoing</span>
+                    <span class="badge badge-confirmed">Confirmed (Tier 1)</span>
+                  </div>
+                  <h3 class="opp-title">Ihsan Trust Qarz-e-Hasna Facility for Higher Education</h3>
+                  <div class="opp-sponsor">Sponsor: <strong>Ihsan Trust</strong> (NGO-foundation)</div>
+                </div>
+                <div><a href="https://www.ihsantrust.org/apply-now/" target="_blank" rel="noopener" class="btn-apply">Apply Online &rarr;</a></div>
+              </div>
+
+              <div class="opp-grid">
+                <div class="opp-field"><strong>Eligible Universities:</strong> Over 150 partner universities including public and private universities in KP (both)</div>
+                <div class="opp-field"><strong>Degree Levels:</strong> Undergraduate, Postgraduate</div>
+                <div class="opp-field"><strong>Fields of Study:</strong> All professional disciplines</div>
+                <div class="opp-field"><strong>Academic Years:</strong> All academic years</div>
+                <div class="opp-field"><strong>Domicile Requirements:</strong> Open to all Pakistani citizens including KP and Charsadda</div>
+                <div class="opp-field"><strong>District / Tehsil:</strong> not stated (All Pakistan)</div>
+                <div class="opp-field"><strong>KP / Charsadda Eligibility:</strong> KP: yes | Charsadda: yes</div>
+                <div class="opp-field"><strong>Academic Threshold:</strong> 2.50 CGPA</div>
+                <div class="opp-field"><strong>Family Income Cap:</strong> not stated</div>
+                <div class="opp-field"><strong>Need Criteria:</strong> Purely need-based for students unable to pay educational expenses</div>
+                <div class="opp-field"><strong>Merit Criteria:</strong> Good academic performance with minimum 2.50 CGPA</div>
+                <div class="opp-field"><strong>Gender / Age Limit:</strong> Gender: all | Age: not stated</div>
+                <div class="opp-field"><strong>Award Amount:</strong> 100% tuition fee loan paid directly to the university</div>
+                <div class="opp-field"><strong>Benefits:</strong> Pure interest-free educational loan, zero markup, flexible post-graduation repayment</div>
+                <div class="opp-field"><strong>Duration & Awards:</strong> Duration: Duration of degree program | Slots: Unlimited for eligible candidates</div>
+                <div class="opp-field"><strong>Application Procedure:</strong> Apply online via Ihsan Trust portal or university financial aid office</div>
+                <div class="opp-field"><strong>Required Documents:</strong> University fee voucher, salary slip/income affidavit, CNIC, academic transcripts</div>
+                <div class="opp-field"><strong>Attestation Rules:</strong> Income affidavit on PKR 100 stamp paper</div>
+                <div class="opp-field"><strong>Important Dates:</strong> Open: Rolling / ongoing | Deadline: Rolling / ongoing | Hardcopy: not stated</div>
+                <div class="opp-field"><strong>Cycle & Contact:</strong> Cycle: 2026-27 | Email: info@ihsantrust.org | Tel: +92-21-34315481</div>
+              </div>
+
+              <div class='evidence-quote'><strong>Verbatim Official Quote:</strong> &ldquo;Ihsan Trust provides purely interest-free student loans (Qarz-e-Hasna) for needy students across all partner public and private universities in Pakistan.&rdquo;</div>
+
+              <div style="font-size: 0.8rem; color: #64748b; margin-top: 10px; display: flex; justify-content: space-between; flex-wrap: wrap;">
+                <div>First Seen: <strong>2026-10-16</strong> | Last Verified: <strong>2026-10-16</strong></div>
+                <div>Source: <a href="https://www.ihsantrust.org/education-loan/" target="_blank" rel="noopener" style="color: var(--primary);">https://www.ihsantrust.org/education-loan/...</a></div>
+              </div>
+            </div>
+            
+
+            <div class="opp-card" id="SCH-202610-0010">
+              <div class="opp-card-header">
+                <div>
+                  <div style="display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 6px;">
+                    <span class="badge badge-kp">KP Domicile</span>
+                    <span class="badge badge-rolling">Rolling / ongoing</span>
+                    <span class="badge badge-confirmed">Confirmed (Tier 1)</span>
+                  </div>
+                  <h3 class="opp-title">Ihsan Trust Qarz-e-Hasna Interest-Free Student Loan</h3>
+                  <div class="opp-sponsor">Sponsor: <strong>Ihsan Trust</strong> (NGO-foundation)</div>
+                </div>
+                <div><a href="https://www.ihsantrust.org/education-loan/" target="_blank" rel="noopener" class="btn-apply">Apply Online &rarr;</a></div>
+              </div>
+
+              <div class="opp-grid">
+                <div class="opp-field"><strong>Eligible Universities:</strong> Over 150 partner universities across Pakistan (both public and private sectors in KP) (both)</div>
+                <div class="opp-field"><strong>Degree Levels:</strong> Undergraduate, Master&#x27;s, Professional Degrees</div>
+                <div class="opp-field"><strong>Fields of Study:</strong> All disciplines</div>
+                <div class="opp-field"><strong>Academic Years:</strong> All academic years</div>
+                <div class="opp-field"><strong>Domicile Requirements:</strong> All Pakistani citizens (including Khyber Pakhtunkhwa &amp; Charsadda)</div>
+                <div class="opp-field"><strong>District / Tehsil:</strong> All districts (Pakistan-wide)</div>
+                <div class="opp-field"><strong>KP / Charsadda Eligibility:</strong> KP: yes | Charsadda: yes</div>
+                <div class="opp-field"><strong>Academic Threshold:</strong> 2.50 CGPA</div>
+                <div class="opp-field"><strong>Family Income Cap:</strong> not stated</div>
+                <div class="opp-field"><strong>Need Criteria:</strong> Genuine financial inability to afford university fee dues</div>
+                <div class="opp-field"><strong>Merit Criteria:</strong> Minimum 2.50 CGPA in previous semester</div>
+                <div class="opp-field"><strong>Gender / Age Limit:</strong> Gender: all | Age: not stated</div>
+                <div class="opp-field"><strong>Award Amount:</strong> 100% university tuition fee paid directly to the university</div>
+                <div class="opp-field"><strong>Benefits:</strong> Zero mark-up interest-free loan, flexible post-employment repayment</div>
+                <div class="opp-field"><strong>Duration & Awards:</strong> Duration: Complete duration of degree | Slots: Continuous / unlimited for eligible students</div>
+                <div class="opp-field"><strong>Application Procedure:</strong> Apply online at Ihsan Trust website or via university financial aid office</div>
+                <div class="opp-field"><strong>Required Documents:</strong> University fee voucher, salary slip or income affidavit, educational certificates, CNIC</div>
+                <div class="opp-field"><strong>Attestation Rules:</strong> Income affidavit on PKR 100 stamp paper</div>
+                <div class="opp-field"><strong>Important Dates:</strong> Open: Rolling / ongoing | Deadline: Rolling / ongoing | Hardcopy: not stated</div>
+                <div class="opp-field"><strong>Cycle & Contact:</strong> Cycle: 2026-27 | Email: info@ihsantrust.org | Tel: +92-21-34315481</div>
+              </div>
+
+              <div class='evidence-quote'><strong>Verbatim Official Quote:</strong> &ldquo;Ihsan Trust provides pure interest-free loans (Qarz-e-Hasna) to needy students studying in higher education institutions all across Pakistan.&rdquo;</div>
+
+              <div style="font-size: 0.8rem; color: #64748b; margin-top: 10px; display: flex; justify-content: space-between; flex-wrap: wrap;">
+                <div>First Seen: <strong>2026-08-01</strong> | Last Verified: <strong>2026-10-16</strong></div>
+                <div>Source: <a href="https://www.ihsantrust.org/education-loan/" target="_blank" rel="noopener" style="color: var(--primary);">https://www.ihsantrust.org/education-loan/...</a></div>
+              </div>
+            </div>
+            
+    </div>
+
+    <!-- International Section -->
+    <div class="section-header">
+      <h2 class="section-title">International Programmes (Open to Pakistani & KP Students)</h2>
+      <span class="section-badge">2 Programmes</span>
+    </div>
+    <div class="table-wrapper">
+      <table class="data-table" id="internationalTable">
+        <thead>
+          <tr>
+            <th>Opportunity & Sponsor</th>
+            <th>Status</th>
+            <th>Deadline</th>
+            <th>Benefits</th>
+            <th>Eligibility</th>
+            <th>Action</th>
+            <th>Verification</th>
+          </tr>
+        </thead>
+        <tbody>
+          
+            <tr>
+              <td>
+                <div style="font-weight: 600; color: #0f172a;">Chevening Pakistan Scholarships 2026-27</div>
+                <div style="font-size: 0.8rem; color: #64748b;">UK Foreign, Commonwealth and Development Office (FCDO)</div>
+                
+              </td>
+              <td><span class="badge badge-open">Open</span></td>
+              <td style="white-space: nowrap; font-size: 0.85rem; font-weight: 500;">
+                2026-11-05
+                
+              </td>
+              <td><div style="display: flex; flex-direction: column; gap: 4px;"><span class="badge badge-charsadda">Charsadda Priority</span> <span class="badge badge-kp">KP Domicile</span></div></td>
+              <td style="font-size: 0.82rem; max-width: 250px;">Fully funded: University tuition fees, monthly living stipend, return economy flights, arrival allowance</td>
+              <td><a href="https://www.chevening.org/scholarship/pakistan/" target="_blank" rel="noopener" class="btn-apply">Apply Online &rarr;</a></td>
+              <td><span class="badge badge-confirmed">Confirmed (Tier 1)</span></td>
+            </tr>
+            
+
+            <tr>
+              <td>
+                <div style="font-weight: 600; color: #0f172a;">Fulbright Foreign Student Program (USEFP Pakistan) 2027</div>
+                <div style="font-size: 0.8rem; color: #64748b;">United States Educational Foundation in Pakistan (USEFP)</div>
+                
+              </td>
+              <td><span class="badge badge-upcoming">Upcoming</span></td>
+              <td style="white-space: nowrap; font-size: 0.85rem; font-weight: 500;">
+                2027-02-28
+                
+              </td>
+              <td><div style="display: flex; flex-direction: column; gap: 4px;"><span class="badge badge-kp">KP Domicile</span></div></td>
+              <td style="font-size: 0.82rem; max-width: 250px;">Fully funded: Tuition, textbooks, airfare, living stipend, health insurance, visa sponsorship</td>
+              <td><a href="https://usefp.org/scholarships/fulbright-degree.cfm" target="_blank" rel="noopener" class="btn-apply">Apply Online &rarr;</a></td>
+              <td><span class="badge badge-confirmed">Confirmed (Tier 1)</span></td>
+            </tr>
+            
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Watchlist Section -->
+    
+
+    <!-- Recently Closed Section -->
+    
+
+    <!-- Unprocessed Sources if any -->
+    
+
+    <!-- Methodology & Disclaimer -->
+    <footer class="report-footer" id="methodologyDisclaimer">
+      <h3>Methodology & Source Verification Framework</h3>
+      <p style="margin-bottom: 12px;">
+        This intelligence report is compiled automatically every day at <strong>07:00 Pakistan Standard Time (PKT, UTC+5)</strong>.
+        Every listing is verified strictly against official domains:
+      </p>
+      <ul style="margin-left: 20px; margin-bottom: 14px; line-height: 1.6;">
+        <li><strong>Tier 1 (Official):</strong> Direct government domains (<code>*.gov.pk</code>, <code>hec.gov.pk</code>, <code>ef.kp.gov.pk</code>, <code>scholarships.kpitb.online</code>), university domains (<code>*.edu.pk</code>), and accountable sponsor platforms. Marked with a green <em>Confirmed</em> badge.</li>
+        <li><strong>Tier 2 (Official Secondary):</strong> Partner republishing notices (e.g. university SFAO notice on federal schemes). Marked <em>Via Partner</em>.</li>
+        <li><strong>Tier 3 (Unofficial):</strong> Aggregators and press announcements. Used for discovery only; retained as <em>Unverified</em> until confirmed on official domains.</li>
+      </ul>
+      <p style="color: #64748b; font-size: 0.82rem; margin-top: 12px;">
+        <strong>Important Disclaimer:</strong> While automated verification checks apply links, deadlines, and verbatim eligibility requirements daily,
+        students are strongly advised to consult the respective university Students Financial Aid Office (SFAO) or sponsor portal to confirm exact document submission and attestation procedures before applying.
+      </p>
+    </footer>
+  </div>
+</body>
+</html>

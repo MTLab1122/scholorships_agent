@@ -1,0 +1,363 @@
+# Seed sources for daily scholarship sweep
+# Tier 1 = Official sponsor domain, *.gov.pk, *.edu.pk
+# Tier 2 = Official secondary (e.g. partner university republishing call)
+# Tier 3 = Unofficial / aggregators (discovery only)
+
+sources:
+  # Federal Government Programmes
+  - id: "hec-scholarships-main"
+    name: "Higher Education Commission (HEC) Scholarships & Grants"
+    url: "https://www.hec.gov.pk/english/scholarshipsgrants/pages/default.aspx"
+    tier: 1
+    category: "federal_govt"
+    render: "static"
+    sector: "both"
+    notes: "Main portal for all federal HEC indigenous and overseas scholarships"
+
+  - id: "hec-need-based"
+    name: "HEC Need Based Scholarships Portal"
+    url: "https://www.hec.gov.pk/english/scholarshipsgrants/NBS/Pages/default.aspx"
+    tier: 1
+    category: "federal_govt"
+    render: "static"
+    sector: "public"
+    notes: "HEC Need Based Scholarship for public sector universities"
+
+  - id: "hec-ehsaas"
+    name: "Ehsaas / BISP Undergraduate Scholarship Project"
+    url: "https://ehsaas.hec.gov.pk/"
+    tier: 1
+    category: "federal_govt"
+    render: "static"
+    sector: "public"
+    notes: "Federal need-based scholarship for low-income families"
+
+  - id: "pmyp-initiatives"
+    name: "Prime Minister's Youth Programme (PMYP)"
+    url: "https://pmyp.gov.pk/"
+    tier: 1
+    category: "federal_govt"
+    render: "static"
+    sector: "both"
+    notes: "Prime minister schemes for education, laptops and youth grants"
+
+  - id: "pbm-education"
+    name: "Pakistan Bait-ul-Mal (PBM) Educational Assistance"
+    url: "https://www.pbm.gov.pk/education.html"
+    tier: 1
+    category: "federal_govt"
+    render: "static"
+    sector: "both"
+    notes: "Federal stipends for deserving poor students across Pakistan"
+
+  # KP Provincial Government Programmes
+  - id: "kp-hed"
+    name: "KP Higher Education, Archives and Libraries Department"
+    url: "https://hed.kp.gov.pk/"
+    tier: 1
+    category: "provincial_govt"
+    render: "static"
+    sector: "public"
+    notes: "Provincial higher education initiatives and announcements"
+
+  - id: "kp-kpef"
+    name: "Khyber Pakhtunkhwa Education Foundation (KPEF)"
+    url: "https://ef.kp.gov.pk/"
+    tier: 1
+    category: "provincial_govt"
+    render: "static"
+    sector: "both"
+    notes: "KPEF merit & need-based scholarship schemes for KP students"
+
+  - id: "kp-scholarships-portal"
+    name: "KP Scholarship Portal (KPITB)"
+    url: "https://scholarships.kpitb.online/"
+    tier: 1
+    category: "provincial_govt"
+    render: "static"
+    sector: "both"
+    notes: "Centralized KP scholarship portal developed by KP Information Technology Board"
+
+  - id: "kp-benevolent-fund"
+    name: "KP Benevolent Fund Educational Grants"
+    url: "https://bf.kp.gov.pk/"
+    tier: 1
+    category: "provincial_govt"
+    render: "static"
+    sector: "both"
+    notes: "Educational scholarships for children of KP provincial government employees"
+
+  - id: "kp-zakat-ushr"
+    name: "KP Zakat, Ushr & Social Welfare Department"
+    url: "https://zakat.kp.gov.pk/"
+    tier: 1
+    category: "provincial_govt"
+    render: "static"
+    sector: "both"
+    notes: "Mora educational scholarships for destitute KP students"
+
+  - id: "kp-auqaf-minorities"
+    name: "KP Auqaf, Hajj, Religious & Minority Affairs"
+    url: "https://auqaf.kp.gov.pk/"
+    tier: 1
+    category: "provincial_govt"
+    render: "static"
+    sector: "both"
+    notes: "Special scholarships for religious minority students in KP"
+
+  - id: "kp-mineskp"
+    name: "KP Directorate of Mines & Minerals Labour Welfare"
+    url: "https://mineskp.gov.pk/"
+    tier: 1
+    category: "provincial_govt"
+    render: "static"
+    sector: "both"
+    notes: "Scholarships for children of registered mine workers in KP"
+
+  # KP Public Universities (Priority Institutions)
+  - id: "uni-uop-sfao"
+    name: "University of Peshawar - Students Financial Aid Office (SFAO)"
+    url: "https://www.uop.edu.pk/sfao/"
+    tier: 1
+    category: "university"
+    render: "static"
+    sector: "public"
+    notes: "Priority Target University (Public Report): UoP internal and external aid notices"
+
+  - id: "uni-uet-peshawar"
+    name: "UET Peshawar Directorate of Financial Aid"
+    url: "https://uetpeshawar.edu.pk/financial-aid/"
+    tier: 1
+    category: "university"
+    render: "static"
+    sector: "public"
+    notes: "Priority Target University (Public Report): UET Peshawar need and merit scholarships"
+
+  - id: "uni-bkuc-charsadda"
+    name: "Bacha Khan University Charsadda - Financial Aid"
+    url: "https://bkuc.edu.pk/financial-aid"
+    tier: 1
+    category: "university"
+    render: "static"
+    sector: "public"
+    notes: "Key Charsadda District Priority: Local institution in Charsadda"
+
+  - id: "uni-icp-peshawar"
+    name: "Islamia College Peshawar - Scholarships & Aid"
+    url: "https://icp.edu.pk/scholarships/"
+    tier: 1
+    category: "university"
+    render: "static"
+    sector: "public"
+    notes: "Historic public institution in Peshawar"
+
+  - id: "uni-kmu-peshawar"
+    name: "Khyber Medical University (KMU) - Financial Aid"
+    url: "https://kmu.edu.pk/financial-aid"
+    tier: 1
+    category: "university"
+    render: "static"
+    sector: "public"
+    notes: "Leading public medical university in KP"
+
+  - id: "uni-aup-peshawar"
+    name: "The University of Agriculture Peshawar (AUP) - Financial Aid"
+    url: "https://aup.edu.pk/financial_aid.php"
+    tier: 1
+    category: "university"
+    render: "static"
+    sector: "public"
+    notes: "Public agricultural university in Peshawar"
+
+  - id: "uni-awkum-mardan"
+    name: "Abdul Wali Khan University Mardan (AWKUM) - SFAO"
+    url: "https://awkum.edu.pk/sfao/"
+    tier: 1
+    category: "university"
+    render: "static"
+    sector: "public"
+    notes: "Major public university in neighboring Mardan division"
+
+  - id: "uni-imsciences-peshawar"
+    name: "Institute of Management Sciences (IMSciences) Peshawar"
+    url: "https://imsciences.edu.pk/financial-aid/"
+    tier: 1
+    category: "university"
+    render: "static"
+    sector: "public"
+    notes: "Public-sector autonomous institute created by KP government. Must be classified as public."
+
+  # KP Private Universities (Priority Institutions)
+  - id: "uni-abasyn-peshawar"
+    name: "Abasyn University Peshawar - Scholarships & Aid"
+    url: "https://abasyn.edu.pk/scholarships/"
+    tier: 1
+    category: "university"
+    render: "static"
+    sector: "private"
+    notes: "Priority Target University (Private Report): Abasyn University Peshawar aid programs"
+
+  - id: "uni-cecos-peshawar"
+    name: "CECOS University of IT & Emerging Sciences Peshawar"
+    url: "https://cecos.edu.pk/financial-aid/"
+    tier: 1
+    category: "university"
+    render: "static"
+    sector: "private"
+    notes: "Private sector engineering and IT university in Peshawar"
+
+  - id: "uni-iqra-national"
+    name: "Iqra National University (INU) Peshawar"
+    url: "https://inu.edu.pk/scholarships/"
+    tier: 1
+    category: "university"
+    render: "static"
+    sector: "private"
+    notes: "Private university in Peshawar"
+
+  - id: "uni-city-peshawar"
+    name: "City University of Science & IT (CUSIT) Peshawar"
+    url: "https://cusit.edu.pk/scholarships/"
+    tier: 1
+    category: "university"
+    render: "static"
+    sector: "private"
+    notes: "Private IT university in Peshawar"
+
+  - id: "uni-sarhad-peshawar"
+    name: "Sarhad University of Science & IT (SUIT) Peshawar"
+    url: "https://suit.edu.pk/financial-aid/"
+    tier: 1
+    category: "university"
+    render: "static"
+    sector: "private"
+    notes: "Private university in Peshawar"
+
+  # NGOs, Foundations & Trusts
+  - id: "ngo-ihsan-trust"
+    name: "Ihsan Trust - Qarz-e-Hasna Interest-Free Student Loan"
+    url: "https://www.ihsantrust.org/education-loan/"
+    tier: 1
+    category: "NGO-foundation"
+    render: "static"
+    sector: "both"
+    notes: "Major non-profit providing pure interest-free educational loans across Pakistani universities"
+
+  - id: "ngo-akhuwat"
+    name: "Akhuwat Educational Services & Financial Aid"
+    url: "https://akhuwat.org.pk/education-services/"
+    tier: 1
+    category: "NGO-foundation"
+    render: "static"
+    sector: "both"
+    notes: "Interest-free educational support and colleges"
+
+  - id: "ngo-nbf"
+    name: "National Book Foundation (NBF) - Student Book Subsidies"
+    url: "https://nbf.org.pk/"
+    tier: 1
+    category: "NGO-foundation"
+    render: "static"
+    sector: "both"
+    notes: "Textbook subsidies and student reader cards"
+
+  - id: "ngo-peef-national"
+    name: "Punjab Educational Endowment Fund (PEEF) - KP Special Quota"
+    url: "https://peef.org.pk/special-quota-scholarship"
+    tier: 1
+    category: "NGO-foundation"
+    render: "static"
+    sector: "both"
+    notes: "PEEF national quota awards open to KP / merged-districts students"
+
+  # Corporate & SOE Schemes
+  - id: "corp-ogdcl"
+    name: "OGDCL CSR Educational Scholarships"
+    url: "https://www.ogdcl.com/scholarships"
+    tier: 1
+    category: "corporate"
+    render: "static"
+    sector: "both"
+    notes: "Scholarships by OGDCL especially for students from operational and oil-gas producing districts"
+
+  - id: "corp-ppl"
+    name: "Pakistan Petroleum Limited (PPL) Welfare Trust Scholarships"
+    url: "https://www.ppl.com.pk/content/education"
+    tier: 1
+    category: "corporate"
+    render: "static"
+    sector: "both"
+    notes: "Scholarships for higher professional education"
+
+  - id: "corp-mol-pakistan"
+    name: "MOL Pakistan Talent Scholarships (KP Focus)"
+    url: "https://pakistan.mol.ca/en/corporate-social-responsibility/scholarships"
+    tier: 1
+    category: "corporate"
+    render: "static"
+    sector: "both"
+    notes: "MOL Pakistan CSR initiatives in KP operational areas"
+
+  - id: "corp-sngpl"
+    name: "SNGPL Educational Scholarships"
+    url: "https://www.sngpl.com.pk/"
+    tier: 1
+    category: "corporate"
+    render: "static"
+    sector: "both"
+    notes: "Sui Northern Gas Pipelines Limited educational assistance"
+
+  # International Programmes (Open to Pakistani / KP Students)
+  - id: "intl-chevening"
+    name: "Chevening Scholarships (UK Foreign, Commonwealth & Development Office)"
+    url: "https://www.chevening.org/scholarship/pakistan/"
+    tier: 1
+    category: "international"
+    render: "static"
+    sector: "both"
+    notes: "UK government fully-funded master's scholarships"
+
+  - id: "intl-fulbright-usefp"
+    name: "Fulbright Degree Program (USEFP Pakistan)"
+    url: "https://usefp.org/scholarships/fulbright-degree.cfm"
+    tier: 1
+    category: "international"
+    render: "static"
+    sector: "both"
+    notes: "US government fully-funded Master's and PhD scholarships with encouragement for KP applicants"
+
+  - id: "intl-daad-pakistan"
+    name: "DAAD German Academic Exchange Service Pakistan"
+    url: "https://www.daad.pk/en/find-funding/scholarship-database/"
+    tier: 1
+    category: "international"
+    render: "static"
+    sector: "both"
+    notes: "German postgraduate scholarships for developing countries (EPOS, Helmut-Schmidt)"
+
+  - id: "intl-commonwealth"
+    name: "Commonwealth Scholarships for Pakistan"
+    url: "https://cscuk.fcdo.gov.uk/apply/pakistan/"
+    tier: 1
+    category: "international"
+    render: "static"
+    sector: "both"
+    notes: "UK Commonwealth Master's and PhD scholarships via HEC nominating agency"
+
+  - id: "intl-turkey-burslari"
+    name: "Türkiye Bursları Scholarships"
+    url: "https://turkiyeburslari.gov.tr/"
+    tier: 1
+    category: "international"
+    render: "static"
+    sector: "both"
+    notes: "Turkish government fully-funded undergraduate, Master's and PhD awards"
+
+  - id: "intl-csc-china"
+    name: "Chinese Government Scholarships (CSC via HEC)"
+    url: "https://www.hec.gov.pk/english/scholarshipsgrants/lao/CGS/Pages/default.aspx"
+    tier: 1
+    category: "international"
+    render: "static"
+    sector: "both"
+    notes: "Fully-funded bilateral scholarships for Pakistani students to study in China"
