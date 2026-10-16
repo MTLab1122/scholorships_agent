@@ -45,6 +45,7 @@ PKT_TIMEZONE = datetime.timezone(datetime.timedelta(hours=5))
 class ScholarshipDailyPipeline:
     def __init__(self, workspace_root: Optional[Path] = None):
         self.workspace_root = workspace_root or Path(__file__).resolve().parent.parent
+        self._load_env_file(self.workspace_root / ".env")
         self.config_dir = self.workspace_root / "config"
         self.data_dir = self.workspace_root / "data"
         self.reports_dir = self.workspace_root / "reports"
@@ -58,8 +59,9 @@ class ScholarshipDailyPipeline:
             timeout=self.settings.get("pipeline", {}).get("request_timeout_seconds", 25),
             follow_links_per_seed=self.settings.get("pipeline", {}).get("follow_links_per_seed", 5)
         )
+        model_name = os.environ.get("GEMINI_MODEL") or self.settings.get("gemini", {}).get("model", "gemini-3.8-flash")
         self.gemini_client = GeminiScholarshipClient(
-            primary_model=self.settings.get("gemini", {}).get("model", "gemini-3.8-flash"),
+            primary_model=model_name,
             fallback_model=self.settings.get("gemini", {}).get("fallback_model", "gemini-3.5-flash-lite"),
             max_retries=self.settings.get("gemini", {}).get("max_retries", 3),
             backoff_factor=self.settings.get("gemini", {}).get("retry_backoff_factor", 2.0)
@@ -80,6 +82,19 @@ class ScholarshipDailyPipeline:
         self.csv_gen = CSVReportGenerator()
         self.excel_gen = ExcelReportGenerator()
         self.pdf_gen = PDFReportGenerator()
+
+    def _load_env_file(self, path: Path) -> None:
+        if path.exists():
+            with open(path, "r", encoding="utf-8") as f:
+                for line in f:
+                    line = line.strip()
+                    if not line or line.startswith("#") or "=" not in line:
+                        continue
+                    key, val = line.split("=", 1)
+                    key = key.strip()
+                    val = val.strip().strip("\"'")
+                    if key not in os.environ:
+                        os.environ[key] = val
 
     def _load_settings(self) -> Dict[str, Any]:
         settings_path = self.config_dir / "settings.yaml"
@@ -156,7 +171,7 @@ class ScholarshipDailyPipeline:
             query = dq.get("query", "")
             focus = dq.get("focus", "")
             items = self.gemini_client.run_discovery_query(
-                query=query, focus=focus, today_pkt=today_str, cycle=self.settings.get("cycle", "2026-27")
+                query=query, focus=focus, today_pkt=today_str, cycle=self.settings.get("cycle", "2026-27"), force_mock=dry_run
             )
             for item in items:
                 target_url = item.official_url or item.other_url
@@ -184,7 +199,8 @@ class ScholarshipDailyPipeline:
                 tier=page.tier,
                 links_map=page.links,
                 today_pkt=today_str,
-                cycle=self.settings.get("cycle", "2026-27")
+                cycle=self.settings.get("cycle", "2026-27"),
+                force_mock=dry_run
             )
             extracted_items.extend(items)
 
@@ -288,13 +304,24 @@ class ScholarshipDailyPipeline:
             failed_sources=failed_sources
         )
 
-        # Step 10: Email reports via Resend
+        # Step 10: Email reports via Resend (filtered to PDF format only)
+        attach_formats = os.environ.get("EMAIL_ATTACHMENT_FORMATS") or self.settings.get("email", {}).get("attachment_formats", "pdf")
+        if isinstance(attach_formats, str):
+            allowed_exts = {f".{ext.strip().lower().lstrip('.')}" for ext in attach_formats.split(",") if ext.strip()}
+        elif isinstance(attach_formats, (list, tuple, set)):
+            allowed_exts = {f".{str(ext).strip().lower().lstrip('.')}" for ext in attach_formats}
+        else:
+            allowed_exts = {".pdf"}
+
+        email_attachments = [f for f in generated_files if f.suffix.lower() in allowed_exts]
+
         email_sent = self.emailer.send_daily_reports(
             public_summary=pub_summary,
             private_summary=priv_summary,
-            attachment_paths=generated_files,
+            attachment_paths=email_attachments,
             degraded=degraded,
-            today_pkt=today_str
+            today_pkt=today_str,
+            dry_run=dry_run
         )
 
         return {

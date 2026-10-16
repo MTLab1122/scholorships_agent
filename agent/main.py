@@ -1,11 +1,27 @@
-"""CLI entry point for the KP & Charsadda Scholarship Intelligence Agent.
-"""
-
+import os
 import sys
 import argparse
 import logging
 from pathlib import Path
 from agent.pipeline import ScholarshipDailyPipeline
+
+
+def load_env_file(dotenv_path: Path = None):
+    """Loads key=value pairs from .env into os.environ if not already set."""
+    if dotenv_path is None:
+        dotenv_path = Path(__file__).resolve().parent.parent / ".env"
+    if dotenv_path.exists():
+        with open(dotenv_path, "r", encoding="utf-8") as f:
+            for line in f:
+                line = line.strip()
+                if not line or line.startswith("#") or "=" not in line:
+                    continue
+                key, val = line.split("=", 1)
+                key = key.strip()
+                val = val.strip().strip("\"'")
+                if key not in os.environ:
+                    os.environ[key] = val
+
 
 logging.basicConfig(
     level=logging.INFO,
@@ -18,6 +34,7 @@ logger = logging.getLogger("scholarship_agent")
 
 
 def main():
+    load_env_file()
     parser = argparse.ArgumentParser(
         description="Daily Scholarship Intelligence Agent for Khyber Pakhtunkhwa (KP) & Charsadda"
     )

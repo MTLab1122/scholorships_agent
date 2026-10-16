@@ -23,11 +23,18 @@ class ResendEmailer:
         self,
         api_key: Optional[str] = None,
         from_email: Optional[str] = None,
-        to_email: Optional[str] = None,
+        to_email: Optional[Any] = None,
     ):
         self.api_key = api_key or os.environ.get("RESEND_API_KEY", "")
         self.from_email = from_email or os.environ.get("RESEND_FROM_EMAIL", "onboarding@resend.dev")
-        self.to_email = to_email or os.environ.get("RESEND_TO_EMAIL", "")
+        
+        raw_to = to_email or os.environ.get("RECIPIENT_EMAIL") or os.environ.get("RESEND_TO_EMAIL", "")
+        if isinstance(raw_to, str):
+            self.to_email = [e.strip() for e in raw_to.split(",") if e.strip()]
+        elif isinstance(raw_to, list):
+            self.to_email = [e.strip() for e in raw_to if e.strip()]
+        else:
+            self.to_email = []
 
     def send_daily_reports(
         self,
@@ -35,7 +42,8 @@ class ResendEmailer:
         private_summary: ReportSummary,
         attachment_paths: List[Path],
         degraded: bool = False,
-        today_pkt: str = ""
+        today_pkt: str = "",
+        dry_run: bool = False
     ) -> bool:
         """Composes and delivers the daily scholarship intelligence email via Resend."""
         total_opps = public_summary.total_opportunities + private_summary.total_opportunities
@@ -52,7 +60,8 @@ class ResendEmailer:
             public_summary=public_summary,
             private_summary=private_summary,
             today_pkt=today_pkt,
-            degraded=degraded
+            degraded=degraded,
+            attachment_paths=attachment_paths
         )
 
         # Build attachments
@@ -71,9 +80,9 @@ class ResendEmailer:
                 except Exception as e:
                     logger.warning(f"Failed to read attachment {path}: {e}")
 
-        # If no API key or recipient, save local email preview and return success
-        if not self.api_key or not self.to_email:
-            logger.info("RESEND_API_KEY or RESEND_TO_EMAIL not provided. Writing email preview to reports directory.")
+        # If dry-run, no API key, or no recipient, save local email preview and return success
+        if dry_run or not self.api_key or not self.to_email:
+            logger.info("Dry-run active or credentials omitted. Writing email preview to reports directory.")
             if attachment_paths:
                 preview_path = attachment_paths[0].parent / "email_preview.html"
                 try:
@@ -114,8 +123,14 @@ class ResendEmailer:
         public_summary: ReportSummary,
         private_summary: ReportSummary,
         today_pkt: str,
-        degraded: bool
+        degraded: bool,
+        attachment_paths: Optional[List[Path]] = None
     ) -> str:
+        if attachment_paths:
+            att_items = "".join(f"<li><code>{Path(p).name}</code></li>" for p in attachment_paths)
+        else:
+            att_items = f"<li><code>public_scholarships_report_{today_pkt}.pdf</code></li><li><code>private_scholarships_report_{today_pkt}.pdf</code></li>"
+
         return f"""<!DOCTYPE html>
 <html>
 <head>
@@ -176,16 +191,15 @@ class ResendEmailer:
 
       <!-- Attachments Notice -->
       <div style="background-color: #f8fafc; border: 1px solid #cbd5e1; border-radius: 8px; padding: 14px 18px; margin-bottom: 20px;">
-        <h4 style="margin: 0 0 6px 0; font-size: 13px; color: #0f172a;">Attached Downloadable Reports:</h4>
+        <h4 style="margin: 0 0 6px 0; font-size: 13px; color: #0f172a;">Attached PDF Reports:</h4>
         <ul style="margin: 0; padding-left: 20px; font-size: 12px; color: #475569; line-height: 1.6;">
-          <li><code>public_scholarships_report_{today_pkt}.html / .pdf / .xlsx / .csv</code></li>
-          <li><code>private_scholarships_report_{today_pkt}.html / .pdf / .xlsx / .csv</code></li>
+          {att_items}
         </ul>
       </div>
 
       <p style="font-size: 12px; color: #64748b; line-height: 1.5; margin-bottom: 0;">
         All opportunities have been crawled and verified against official Pakistani domains (<code>*.gov.pk</code>, <code>*.edu.pk</code>) and vetted sponsor portals.
-        Open the attached HTML report for full interactive details and print layouts.
+        The attached PDF documents contain complete eligibility criteria, priority flags, and direct application links.
       </p>
     </div>
 

@@ -47,7 +47,8 @@ class GeminiScholarshipClient:
         query: str,
         focus: str,
         today_pkt: str,
-        cycle: str
+        cycle: str,
+        force_mock: bool = False
     ) -> List[DiscoveryItem]:
         """Runs a search discovery query through Gemini with Google Search tool."""
         prompt = DISCOVERY_PROMPT.format(
@@ -57,23 +58,34 @@ class GeminiScholarshipClient:
         )
         user_message = f"{prompt}\nQuery focus: {query}"
 
-        if not self.client:
-            logger.info(f"No Gemini API key available. Running discovery in mock mode for focus: {focus}")
+        if force_mock or not self.client:
+            logger.info(f"Running discovery in mock mode for focus: {focus}")
             return self._mock_discovery(focus, query)
 
         def _call_model(model_name: str):
-            # Using search grounding tool
-            config = types.GenerateContentConfig(
-                system_instruction=SYSTEM_PROMPT,
-                tools=[types.Tool(google_search=types.GoogleSearch())],
-                temperature=0.1,
-            )
-            resp = self.client.models.generate_content(
-                model=model_name,
-                contents=user_message,
-                config=config
-            )
-            return resp
+            try:
+                # First try with search grounding tool
+                config = types.GenerateContentConfig(
+                    system_instruction=SYSTEM_PROMPT,
+                    tools=[types.Tool(google_search=types.GoogleSearch())],
+                    temperature=0.1,
+                )
+                return self.client.models.generate_content(
+                    model=model_name,
+                    contents=user_message,
+                    config=config
+                )
+            except Exception as e:
+                logger.info(f"Search tool call with {model_name} failed ({e}), falling back to direct prompt synthesis.")
+                config = types.GenerateContentConfig(
+                    system_instruction=SYSTEM_PROMPT,
+                    temperature=0.1,
+                )
+                return self.client.models.generate_content(
+                    model=model_name,
+                    contents=user_message,
+                    config=config
+                )
 
         resp = self._execute_with_retry(_call_model)
         if not resp or not resp.text:
@@ -89,7 +101,8 @@ class GeminiScholarshipClient:
         tier: int,
         links_map: Dict[str, str],
         today_pkt: str,
-        cycle: str
+        cycle: str,
+        force_mock: bool = False
     ) -> List[ScholarshipExtractionItem]:
         """Extracts structured scholarship opportunities from page text."""
         # Format links list for prompt (up to 50 links)
@@ -107,8 +120,8 @@ class GeminiScholarshipClient:
             page_text=page_text[:40000] # Ensure within context limits
         )
 
-        if not self.client:
-            logger.info(f"No Gemini API key available. Mock extracting from {source_url}")
+        if force_mock or not self.client:
+            logger.info(f"Mock extracting from {source_url}")
             return self._mock_extraction(source_url, tier, cycle)
 
         def _call_model(model_name: str):

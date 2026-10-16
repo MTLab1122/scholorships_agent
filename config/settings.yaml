@@ -24,6 +24,7 @@ email:
   default_from: "Scholarships Agent <scholarships@updates.internal>"
   default_to: "kp-students@example.com"
   subject_prefix: "KP & Charsadda Daily Scholarship Intelligence"
+  attachment_formats: "pdf" # Deliver reports only in PDF format on email
 
 discovery_queries:
   - query: "site:gov.pk scholarship Khyber Pakhtunkhwa KP 2026 2027 open"
