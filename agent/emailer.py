@@ -82,9 +82,9 @@ class ResendEmailer:
                 except Exception as e:
                     logger.warning(f"Failed to read attachment {path}: {e}")
 
-        # If dry-run, no API key, or no recipient, save local email preview and return success
-        if dry_run or not self.api_key or not self.to_email:
-            logger.info("Dry-run active or credentials omitted. Writing email preview to reports directory.")
+        # If dry-run or no recipient, save local email preview and return success
+        if dry_run or not self.to_email:
+            logger.info("Dry-run active or no recipient configured. Writing email preview to reports directory.")
             if attachment_paths:
                 preview_path = attachment_paths[0].parent / "email_preview.html"
                 try:
@@ -95,14 +95,26 @@ class ResendEmailer:
                     logger.warning(f"Could not save email preview: {e}")
             return True
 
-        # Check if SMTP configuration is provided (e.g. Gmail App Password)
-        smtp_user = os.environ.get("SMTP_USER") or os.environ.get("GMAIL_USER")
-        smtp_pass = os.environ.get("SMTP_PASSWORD") or os.environ.get("GMAIL_APP_PASSWORD")
+        # Check if Gmail / SMTP configuration is provided (direct sending from Gmail)
+        smtp_user = os.environ.get("GMAIL_USER") or os.environ.get("SMTP_USER")
+        smtp_pass = os.environ.get("GMAIL_APP_PASSWORD") or os.environ.get("SMTP_PASSWORD")
         if smtp_user and smtp_pass:
-            logger.info("Using SMTP for multi-recipient email delivery.")
+            logger.info(f"Using direct Gmail SMTP to send report from {smtp_user} to {self.to_email}")
             return self._send_via_smtp(self.to_email, subject, email_html, attachment_paths)
 
-        # Send via Resend REST API
+        # Fallback to Resend REST API if Resend API key is present
+        if not self.api_key:
+            logger.warning("Neither Gmail credentials (GMAIL_USER, GMAIL_APP_PASSWORD) nor RESEND_API_KEY provided.")
+            if attachment_paths:
+                preview_path = attachment_paths[0].parent / "email_preview.html"
+                try:
+                    with open(preview_path, "w", encoding="utf-8") as f:
+                        f.write(email_html)
+                    logger.info(f"Saved email preview to {preview_path}")
+                except Exception as e:
+                    logger.warning(f"Could not save email preview: {e}")
+            return False
+
         headers = {
             "Authorization": f"Bearer {self.api_key}",
             "Content-Type": "application/json"
@@ -169,7 +181,7 @@ class ResendEmailer:
         try:
             msg = EmailMessage()
             msg["Subject"] = subject
-            msg["From"] = smtp_user
+            msg["From"] = f"Muhammad Talha <{smtp_user}>"
             msg["To"] = ", ".join(to_addresses)
             msg.set_content("Please enable HTML to view this report.")
             msg.add_alternative(html_body, subtype="html")
@@ -182,11 +194,11 @@ class ResendEmailer:
                     msg.add_attachment(file_data, maintype="application", subtype="pdf", filename=p.name)
 
             if smtp_port == 465:
-                with smtplib.SMTP_SSL(smtp_host, smtp_port, timeout=30) as server:
+                with smtplib.SMTP_SSL(smtp_host, smtp_port, timeout=45) as server:
                     server.login(smtp_user, smtp_pass)
                     server.send_message(msg)
             else:
-                with smtplib.SMTP(smtp_host, smtp_port, timeout=30) as server:
+                with smtplib.SMTP(smtp_host, smtp_port, timeout=45) as server:
                     server.starttls()
                     server.login(smtp_user, smtp_pass)
                     server.send_message(msg)

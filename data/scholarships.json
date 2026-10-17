@@ -296,7 +296,7 @@
     "source_trust_tier": 1,
     "verification_badge": "Confirmed",
     "claimed_by_source": null,
-    "link_status_apply": "broken",
+    "link_status_apply": "unreachable",
     "link_status_source": "unreachable",
     "first_seen": "2026-08-05",
     "last_verified": "2026-10-17",
