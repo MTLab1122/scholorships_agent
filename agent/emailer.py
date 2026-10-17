@@ -109,7 +109,7 @@ class ResendEmailer:
             return True
 
         smtp_user = os.environ.get("GMAIL_USER") or os.environ.get("SMTP_USER") or self.owner_email
-        smtp_pass = os.environ.get("GMAIL_APP_PASSWORD") or os.environ.get("SMTP_PASSWORD")
+        smtp_pass = (os.environ.get("GMAIL_APP_PASSWORD") or os.environ.get("SMTP_PASSWORD", "")).replace(" ", "").strip()
 
         # -------------------------------------------------------------
         # STAGE 1 (07:00 AM PKT): Send report to Owner (muhammadtalhapro1@gmail.com)
@@ -203,8 +203,9 @@ class ResendEmailer:
         attachment_paths: List[Path]
     ) -> bool:
         """Delivers daily scholarship reports via standard SMTP (e.g. Gmail)."""
-        smtp_user = os.environ.get("SMTP_USER") or os.environ.get("GMAIL_USER")
-        smtp_pass = os.environ.get("SMTP_PASSWORD") or os.environ.get("GMAIL_APP_PASSWORD")
+        smtp_user = os.environ.get("GMAIL_USER") or os.environ.get("SMTP_USER") or self.owner_email
+        raw_pass = os.environ.get("GMAIL_APP_PASSWORD") or os.environ.get("SMTP_PASSWORD", "")
+        smtp_pass = raw_pass.replace(" ", "").strip()
         smtp_host = os.environ.get("SMTP_HOST", "smtp.gmail.com")
         smtp_port = int(os.environ.get("SMTP_PORT", "465"))
 
