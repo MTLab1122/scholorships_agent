@@ -35,7 +35,7 @@ class ResendEmailer:
         self.from_email = from_email or os.environ.get("RESEND_FROM_EMAIL", "onboarding@resend.dev")
         
         self.owner_email = os.environ.get("OWNER_EMAIL") or "muhammadtalhapro1@gmail.com"
-        self.forward_email = os.environ.get("FORWARD_EMAIL") or os.environ.get("RECIPIENT_EMAIL") or "hassantariq603@gmail.com"
+        self.forward_email = os.environ.get("FORWARD_EMAIL") or os.environ.get("RECIPIENT_EMAIL") or "kashmalatariq887@gmail.com"
         
         # Backward compatibility for to_email override
         if to_email:
@@ -59,7 +59,7 @@ class ResendEmailer:
     ) -> bool:
         """Composes and delivers reports in two stages:
         1. 07:00 AM PKT: Sent directly to owner (muhammadtalhapro1@gmail.com).
-        2. 07:05 AM PKT: Forwarded by owner to forward_email (hassantariq603@gmail.com).
+        2. 07:05 AM PKT: Forwarded by owner to forward_email (kashmalatariq887@gmail.com).
         """
         total_opps = public_summary.total_opportunities + private_summary.total_opportunities
         total_charsadda = public_summary.charsadda_eligible_count + private_summary.charsadda_eligible_count
@@ -130,7 +130,7 @@ class ResendEmailer:
             logger.error(f"Failed to deliver daily report to owner ({self.owner_email}).")
 
         # -------------------------------------------------------------
-        # STAGE 2 (07:05 AM PKT): Forward report from muhammadtalhapro1 to hassantariq603
+        # STAGE 2 (07:05 AM PKT): Forward report from muhammadtalhapro1 to kashmalatariq887
         # -------------------------------------------------------------
         if self.forward_email and self.forward_email.lower() != self.owner_email.lower():
             now_pkt = datetime.datetime.now(PKT_TIMEZONE)
