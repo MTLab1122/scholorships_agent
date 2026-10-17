@@ -2,8 +2,8 @@ name: Daily Scholarship Intelligence Pipeline
 
 on:
   schedule:
-    # 07:05 PKT (Pakistan Standard Time, UTC+5) is 02:05 UTC every day
-    - cron: '5 2 * * *'
+    # 07:00 PKT (Pakistan Standard Time, UTC+5) is 02:00 UTC every day
+    - cron: '0 2 * * *'
   workflow_dispatch: # Allows manual trigger from GitHub UI
     inputs:
       dry_run:
@@ -40,12 +40,12 @@ jobs:
       - name: Run Daily Scholarship Intelligence Pipeline
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+          RESEND_FROM_EMAIL: ${{ secrets.RESEND_FROM_EMAIL }}
           GMAIL_USER: ${{ secrets.GMAIL_USER }}
           GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
-          RECIPIENT_EMAIL: ${{ secrets.RECIPIENT_EMAIL }}
-          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
-          RESEND_TO_EMAIL: ${{ secrets.RESEND_TO_EMAIL }}
-          RESEND_FROM_EMAIL: ${{ secrets.RESEND_FROM_EMAIL }}
+          OWNER_EMAIL: ${{ secrets.OWNER_EMAIL }}
+          FORWARD_EMAIL: ${{ secrets.FORWARD_EMAIL }}
         run: |
           if [ "${{ inputs.dry_run }}" = "true" ]; then
             python main.py run --dry-run

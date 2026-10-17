@@ -8,6 +8,8 @@ Handles:
 """
 
 import os
+import time
+import datetime
 import base64
 import smtplib
 from email.message import EmailMessage
@@ -18,6 +20,8 @@ import requests
 from agent.models import ReportSummary
 
 logger = logging.getLogger(__name__)
+
+PKT_TIMEZONE = datetime.timezone(datetime.timedelta(hours=5))
 
 
 class ResendEmailer:
@@ -30,13 +34,19 @@ class ResendEmailer:
         self.api_key = api_key or os.environ.get("RESEND_API_KEY", "")
         self.from_email = from_email or os.environ.get("RESEND_FROM_EMAIL", "onboarding@resend.dev")
         
-        raw_to = to_email or os.environ.get("RECIPIENT_EMAIL") or os.environ.get("RESEND_TO_EMAIL", "")
-        if isinstance(raw_to, str):
-            self.to_email = [e.strip() for e in raw_to.split(",") if e.strip()]
-        elif isinstance(raw_to, list):
-            self.to_email = [e.strip() for e in raw_to if e.strip()]
+        self.owner_email = os.environ.get("OWNER_EMAIL") or "muhammadtalhapro1@gmail.com"
+        self.forward_email = os.environ.get("FORWARD_EMAIL") or os.environ.get("RECIPIENT_EMAIL") or "hassantariq603@gmail.com"
+        
+        # Backward compatibility for to_email override
+        if to_email:
+            if isinstance(to_email, str):
+                self.to_email = [e.strip() for e in to_email.split(",") if e.strip()]
+            elif isinstance(to_email, list):
+                self.to_email = [e.strip() for e in to_email if e.strip()]
+            else:
+                self.to_email = [self.owner_email]
         else:
-            self.to_email = []
+            self.to_email = [self.owner_email]
 
     def send_daily_reports(
         self,
@@ -47,7 +57,10 @@ class ResendEmailer:
         today_pkt: str = "",
         dry_run: bool = False
     ) -> bool:
-        """Composes and delivers the daily scholarship intelligence email via Resend."""
+        """Composes and delivers reports in two stages:
+        1. 07:00 AM PKT: Sent directly to owner (muhammadtalhapro1@gmail.com).
+        2. 07:05 AM PKT: Forwarded by owner to forward_email (hassantariq603@gmail.com).
+        """
         total_opps = public_summary.total_opportunities + private_summary.total_opportunities
         total_charsadda = public_summary.charsadda_eligible_count + private_summary.charsadda_eligible_count
         closing_soon = public_summary.closing_within_7_days + private_summary.closing_within_7_days
@@ -66,7 +79,7 @@ class ResendEmailer:
             attachment_paths=attachment_paths
         )
 
-        # Build attachments
+        # Build attachments for Resend
         attachments = []
         for p in attachment_paths:
             path = Path(p)
@@ -82,9 +95,9 @@ class ResendEmailer:
                 except Exception as e:
                     logger.warning(f"Failed to read attachment {path}: {e}")
 
-        # If dry-run or no recipient, save local email preview and return success
-        if dry_run or not self.to_email:
-            logger.info("Dry-run active or no recipient configured. Writing email preview to reports directory.")
+        # If dry-run, save preview and return success
+        if dry_run:
+            logger.info("Dry-run active. Writing email preview to reports directory.")
             if attachment_paths:
                 preview_path = attachment_paths[0].parent / "email_preview.html"
                 try:
@@ -95,66 +108,86 @@ class ResendEmailer:
                     logger.warning(f"Could not save email preview: {e}")
             return True
 
-        # Check if Gmail / SMTP configuration is provided (direct sending from Gmail)
-        smtp_user = os.environ.get("GMAIL_USER") or os.environ.get("SMTP_USER")
+        smtp_user = os.environ.get("GMAIL_USER") or os.environ.get("SMTP_USER") or self.owner_email
         smtp_pass = os.environ.get("GMAIL_APP_PASSWORD") or os.environ.get("SMTP_PASSWORD")
-        if smtp_user and smtp_pass:
-            logger.info(f"Using direct Gmail SMTP to send report from {smtp_user} to {self.to_email}")
-            return self._send_via_smtp(self.to_email, subject, email_html, attachment_paths)
 
-        # Fallback to Resend REST API if Resend API key is present
-        if not self.api_key:
-            logger.warning("Neither Gmail credentials (GMAIL_USER, GMAIL_APP_PASSWORD) nor RESEND_API_KEY provided.")
-            if attachment_paths:
-                preview_path = attachment_paths[0].parent / "email_preview.html"
-                try:
-                    with open(preview_path, "w", encoding="utf-8") as f:
-                        f.write(email_html)
-                    logger.info(f"Saved email preview to {preview_path}")
-                except Exception as e:
-                    logger.warning(f"Could not save email preview: {e}")
-            return False
+        # -------------------------------------------------------------
+        # STAGE 1 (07:00 AM PKT): Send report to Owner (muhammadtalhapro1@gmail.com)
+        # -------------------------------------------------------------
+        owner_delivered = False
+        logger.info(f"[Stage 1 - 07:00 AM PKT] Sending daily report to owner: {self.owner_email}")
+        
+        # Prefer Resend for owner delivery (fast, reliable, verified)
+        if self.api_key:
+            owner_delivered = self._send_via_resend([self.owner_email], subject, email_html, attachments)
+        
+        # Fallback to SMTP if Resend failed or omitted
+        if not owner_delivered and smtp_user and smtp_pass:
+            logger.info(f"Delivering to owner {self.owner_email} via Gmail SMTP...")
+            owner_delivered = self._send_via_smtp([self.owner_email], subject, email_html, attachment_paths)
 
+        if not owner_delivered:
+            logger.error(f"Failed to deliver daily report to owner ({self.owner_email}).")
+
+        # -------------------------------------------------------------
+        # STAGE 2 (07:05 AM PKT): Forward report from muhammadtalhapro1 to hassantariq603
+        # -------------------------------------------------------------
+        if self.forward_email and self.forward_email.lower() != self.owner_email.lower():
+            now_pkt = datetime.datetime.now(PKT_TIMEZONE)
+            target_forward_time = now_pkt.replace(hour=7, minute=5, second=0, microsecond=0)
+            wait_seconds = (target_forward_time - now_pkt).total_seconds()
+
+            if 0 < wait_seconds <= 600:
+                logger.info(
+                    f"[Stage 2] Current PKT time is {now_pkt.strftime('%H:%M:%S')}. "
+                    f"Waiting {int(wait_seconds)} seconds until exact 07:05 AM PKT to forward report..."
+                )
+                time.sleep(wait_seconds)
+            else:
+                logger.info(
+                    f"[Stage 2] Current PKT time is {now_pkt.strftime('%H:%M:%S')}. "
+                    f"Forwarding scheduled report to {self.forward_email}..."
+                )
+
+            forward_delivered = False
+            if smtp_user and smtp_pass:
+                logger.info(f"Forwarding report from {smtp_user} directly to {self.forward_email} via Gmail SMTP...")
+                forward_delivered = self._send_via_smtp([self.forward_email], subject, email_html, attachment_paths)
+                if forward_delivered:
+                    logger.info(f"Successfully forwarded report from {smtp_user} to {self.forward_email} at 07:05 AM PKT.")
+            else:
+                logger.warning(
+                    f"Cannot forward from {smtp_user} to {self.forward_email}: "
+                    "GMAIL_APP_PASSWORD is not set in environment. "
+                    "Please generate an App Password at https://myaccount.google.com/apppasswords"
+                )
+
+        return owner_delivered
+
+    def _send_via_resend(
+        self,
+        recipients: List[str],
+        subject: str,
+        html_body: str,
+        attachments: List[Dict[str, str]]
+    ) -> bool:
+        """Sends email via Resend API."""
         headers = {
             "Authorization": f"Bearer {self.api_key}",
             "Content-Type": "application/json"
         }
-        recipients = self.to_email if isinstance(self.to_email, list) else [self.to_email]
         payload = {
             "from": self.from_email,
             "to": recipients,
             "subject": subject,
-            "html": email_html,
+            "html": html_body,
             "attachments": attachments
         }
-
         try:
             resp = requests.post("https://api.resend.com/emails", json=payload, headers=headers, timeout=30)
             if resp.status_code in [200, 201]:
                 logger.info(f"Email delivered successfully via Resend to {recipients}: ID {resp.json().get('id')}")
                 return True
-            elif resp.status_code == 403 and len(recipients) > 1:
-                logger.warning(
-                    f"Resend multi-recipient send rejected ({resp.text}). "
-                    "Attempting individual deliveries for each recipient..."
-                )
-                any_success = False
-                for rec in recipients:
-                    sub_payload = dict(payload)
-                    sub_payload["to"] = [rec]
-                    try:
-                        sub_resp = requests.post("https://api.resend.com/emails", json=sub_payload, headers=headers, timeout=30)
-                        if sub_resp.status_code in [200, 201]:
-                            logger.info(f"Delivered to {rec} via Resend: ID {sub_resp.json().get('id')}")
-                            any_success = True
-                        else:
-                            logger.error(
-                                f"Failed to deliver to {rec} via Resend (HTTP {sub_resp.status_code}): {sub_resp.text}. "
-                                "Note: When using onboarding@resend.dev, Resend only allows sending to the account owner email."
-                            )
-                    except Exception as sub_e:
-                        logger.error(f"Error delivering to {rec}: {sub_e}")
-                return any_success
             else:
                 logger.error(f"Resend API error HTTP {resp.status_code}: {resp.text}")
                 return False
