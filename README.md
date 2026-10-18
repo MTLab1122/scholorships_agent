@@ -166,10 +166,13 @@ To enable live crawling and email delivery in GitHub Actions, navigate to **Sett
 | :--- | :--- |
 | `GEMINI_API_KEY` | Google Gemini API key (for `gemini-3.8-flash` search grounding and extraction) |
 | `RESEND_API_KEY` | Resend API key (e.g. `re_...`) |
-| `RESEND_TO_EMAIL` | Destination email address to receive daily reports |
-| `RESEND_FROM_EMAIL` | Verified sender email in Resend (e.g. `scholarships@yourdomain.com` or `onboarding@resend.dev`) |
+| `RESEND_FROM_EMAIL` | Verified sender email in Resend (e.g. `onboarding@resend.dev`) |
+| `GMAIL_USER` | Gmail address for sending reports (e.g. `muhammadtalhapro1@gmail.com`) |
+| `GMAIL_APP_PASSWORD` | Google 16-character App Password for SMTP authentication |
+| `OWNER_EMAIL` | Primary owner recipient email (default: `muhammadtalhapro1@gmail.com`) |
+| `FORWARD_EMAIL` | Recipient email for report forward at 07:05 PKT (`kashmalatariq887@gmail.com`) |
 
-*Note: If `RESEND_API_KEY` is omitted, reports are still created, committed to git, and uploaded as GitHub Actions artifacts. The email step safely outputs a preview file to `reports/YYYY-MM-DD/email_preview.html`.*
+*Note: If `FORWARD_EMAIL` secret still contains `hassantariq`, the system automatically overrides and redirects delivery to `kashmalatariq887@gmail.com`.*
 
 ---
 

@@ -24,6 +24,21 @@ logger = logging.getLogger(__name__)
 PKT_TIMEZONE = datetime.timezone(datetime.timedelta(hours=5))
 
 
+def _sanitize_recipient(email_str: str) -> str:
+    """Sanitizes recipient email addresses and blocks deprecated emails permanently.
+    Redirects any occurrence of hassantariq to kashmalatariq887@gmail.com.
+    """
+    if not email_str:
+        return ""
+    cleaned = str(email_str).strip()
+    if "hassantariq" in cleaned.lower():
+        logger.warning(
+            f"Blocked deprecated recipient '{cleaned}'. Automatically redirected to 'kashmalatariq887@gmail.com'."
+        )
+        return "kashmalatariq887@gmail.com"
+    return cleaned
+
+
 class ResendEmailer:
     def __init__(
         self,
@@ -34,15 +49,17 @@ class ResendEmailer:
         self.api_key = api_key or os.environ.get("RESEND_API_KEY", "")
         self.from_email = from_email or os.environ.get("RESEND_FROM_EMAIL", "onboarding@resend.dev")
         
-        self.owner_email = os.environ.get("OWNER_EMAIL") or "muhammadtalhapro1@gmail.com"
-        self.forward_email = os.environ.get("FORWARD_EMAIL") or os.environ.get("RECIPIENT_EMAIL") or "kashmalatariq887@gmail.com"
+        self.owner_email = _sanitize_recipient(os.environ.get("OWNER_EMAIL") or "muhammadtalhapro1@gmail.com")
+        self.forward_email = _sanitize_recipient(
+            os.environ.get("FORWARD_EMAIL") or os.environ.get("RECIPIENT_EMAIL") or "kashmalatariq887@gmail.com"
+        )
         
         # Backward compatibility for to_email override
         if to_email:
             if isinstance(to_email, str):
-                self.to_email = [e.strip() for e in to_email.split(",") if e.strip()]
+                self.to_email = [_sanitize_recipient(e) for e in to_email.split(",") if _sanitize_recipient(e)]
             elif isinstance(to_email, list):
-                self.to_email = [e.strip() for e in to_email if e.strip()]
+                self.to_email = [_sanitize_recipient(e) for e in to_email if _sanitize_recipient(e)]
             else:
                 self.to_email = [self.owner_email]
         else:
@@ -172,13 +189,23 @@ class ResendEmailer:
         attachments: List[Dict[str, str]]
     ) -> bool:
         """Sends email via Resend API."""
+        sanitized_recipients = []
+        for r in recipients:
+            clean = _sanitize_recipient(r)
+            if clean and clean not in sanitized_recipients:
+                sanitized_recipients.append(clean)
+
+        if not sanitized_recipients:
+            logger.warning("No valid recipients for Resend delivery.")
+            return False
+
         headers = {
             "Authorization": f"Bearer {self.api_key}",
             "Content-Type": "application/json"
         }
         payload = {
             "from": self.from_email,
-            "to": recipients,
+            "to": sanitized_recipients,
             "subject": subject,
             "html": html_body,
             "attachments": attachments
@@ -186,7 +213,7 @@ class ResendEmailer:
         try:
             resp = requests.post("https://api.resend.com/emails", json=payload, headers=headers, timeout=30)
             if resp.status_code in [200, 201]:
-                logger.info(f"Email delivered successfully via Resend to {recipients}: ID {resp.json().get('id')}")
+                logger.info(f"Email delivered successfully via Resend to {sanitized_recipients}: ID {resp.json().get('id')}")
                 return True
             else:
                 logger.error(f"Resend API error HTTP {resp.status_code}: {resp.text}")
@@ -203,6 +230,16 @@ class ResendEmailer:
         attachment_paths: List[Path]
     ) -> bool:
         """Delivers daily scholarship reports via standard SMTP (e.g. Gmail)."""
+        sanitized_recipients = []
+        for r in to_addresses:
+            clean = _sanitize_recipient(r)
+            if clean and clean not in sanitized_recipients:
+                sanitized_recipients.append(clean)
+
+        if not sanitized_recipients:
+            logger.warning("No valid recipients for SMTP delivery.")
+            return False
+
         smtp_user = os.environ.get("GMAIL_USER") or os.environ.get("SMTP_USER") or self.owner_email
         raw_pass = os.environ.get("GMAIL_APP_PASSWORD") or os.environ.get("SMTP_PASSWORD", "")
         smtp_pass = raw_pass.replace(" ", "").strip()
@@ -216,7 +253,7 @@ class ResendEmailer:
             msg = EmailMessage()
             msg["Subject"] = subject
             msg["From"] = f"Muhammad Talha <{smtp_user}>"
-            msg["To"] = ", ".join(to_addresses)
+            msg["To"] = ", ".join(sanitized_recipients)
             msg.set_content("Please enable HTML to view this report.")
             msg.add_alternative(html_body, subtype="html")
 
