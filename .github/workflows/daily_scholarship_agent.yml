@@ -45,7 +45,7 @@ jobs:
           GMAIL_USER: ${{ secrets.GMAIL_USER }}
           GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
           OWNER_EMAIL: ${{ secrets.OWNER_EMAIL || 'muhammadtalhapro1@gmail.com' }}
-          FORWARD_EMAIL: ${{ (secrets.FORWARD_EMAIL != '' && !contains(secrets.FORWARD_EMAIL, 'hassantariq')) && secrets.FORWARD_EMAIL || 'kashmalatariq887@gmail.com' }}
+          FORWARD_EMAIL: kashmalatariq887@gmail.com
         run: |
           if [ "${{ inputs.dry_run }}" = "true" ]; then
             python main.py run --dry-run

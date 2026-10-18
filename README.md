@@ -172,8 +172,6 @@ To enable live crawling and email delivery in GitHub Actions, navigate to **Sett
 | `OWNER_EMAIL` | Primary owner recipient email (default: `muhammadtalhapro1@gmail.com`) |
 | `FORWARD_EMAIL` | Recipient email for report forward at 07:05 PKT (`kashmalatariq887@gmail.com`) |
 
-*Note: If `FORWARD_EMAIL` secret still contains `hassantariq`, the system automatically overrides and redirects delivery to `kashmalatariq887@gmail.com`.*
-
 ---
 
 ## 8. Human Review & Configuration Loop

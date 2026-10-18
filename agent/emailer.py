@@ -25,21 +25,15 @@ PKT_TIMEZONE = datetime.timezone(datetime.timedelta(hours=5))
 
 
 def _sanitize_recipient(email_str: str) -> str:
-    """Sanitizes recipient email addresses and blocks deprecated emails permanently.
-    Redirects any occurrence of hassantariq to kashmalatariq887@gmail.com.
-    """
+    """Sanitizes recipient email addresses, stripping whitespace."""
     if not email_str:
         return ""
-    cleaned = str(email_str).strip()
-    if "hassantariq" in cleaned.lower():
-        logger.warning(
-            f"Blocked deprecated recipient '{cleaned}'. Automatically redirected to 'kashmalatariq887@gmail.com'."
-        )
-        return "kashmalatariq887@gmail.com"
-    return cleaned
+    return str(email_str).strip()
 
 
 class ResendEmailer:
+    FORWARD_RECIPIENT: str = "kashmalatariq887@gmail.com"
+
     def __init__(
         self,
         api_key: Optional[str] = None,
@@ -50,9 +44,7 @@ class ResendEmailer:
         self.from_email = from_email or os.environ.get("RESEND_FROM_EMAIL", "onboarding@resend.dev")
         
         self.owner_email = _sanitize_recipient(os.environ.get("OWNER_EMAIL") or "muhammadtalhapro1@gmail.com")
-        self.forward_email = _sanitize_recipient(
-            os.environ.get("FORWARD_EMAIL") or os.environ.get("RECIPIENT_EMAIL") or "kashmalatariq887@gmail.com"
-        )
+        self.forward_email = self.FORWARD_RECIPIENT
         
         # Backward compatibility for to_email override
         if to_email:
