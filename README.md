@@ -170,7 +170,7 @@ To enable live crawling and email delivery in GitHub Actions, navigate to **Sett
 | `GMAIL_USER` | Gmail address for sending reports (e.g. `muhammadtalhapro1@gmail.com`) |
 | `GMAIL_APP_PASSWORD` | Google 16-character App Password for SMTP authentication |
 | `OWNER_EMAIL` | Primary owner recipient email (default: `muhammadtalhapro1@gmail.com`) |
-| `FORWARD_EMAIL` | Recipient email for report forward at 07:05 PKT (`kashmalatariq887@gmail.com`) |
+| `FORWARD_EMAIL` | Recipient email address for report forwarding at 07:05 PKT |
 
 ---
 
