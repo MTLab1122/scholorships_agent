@@ -1,7 +1,16 @@
 @echo off
-schtasks /create /tn "ScholarshipIntelligenceAgent" /tr "\"%~dp0run_daily_agent.bat\"" /sc daily /st 07:00 /f
+echo ==============================================================================
+echo Disabling Local Windows Task Scheduler Dependency
+echo ==============================================================================
+echo Scheduled automated execution has migrated to GitHub Actions in the cloud.
+echo Removing local task 'ScholarshipIntelligenceAgent' to prevent duplicate emails...
+
+schtasks /delete /tn "ScholarshipIntelligenceAgent" /f >nul 2>&1
 if %ERRORLEVEL% equ 0 (
-    echo Task created successfully.
+    echo [SUCCESS] Local scheduled task successfully deleted.
 ) else (
-    echo Failed to create scheduled task.
+    echo [INFO] No active local scheduled task found (already deleted).
 )
+echo.
+echo Daily pipeline is executed automatically in the cloud via GitHub Actions at 07:00 AM PKT.
+

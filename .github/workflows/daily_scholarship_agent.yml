@@ -2,12 +2,19 @@ name: Daily Scholarship Intelligence Pipeline
 
 on:
   schedule:
-    # 07:00 PKT (Pakistan Standard Time, UTC+5) is 02:00 UTC every day
-    - cron: '0 2 * * *'
+    # 01:45 UTC is 06:45 AM PKT (UTC+5).
+    # Triggers 15 minutes early so Agents 1–9 process discoveries, verify sources, and monitor
+    # deadlines in advance. The 07:00:00 AM PKT gate then holds dispatch until exact 07:00:00 AM PKT.
+    - cron: '45 1 * * *'
   workflow_dispatch: # Allows manual trigger from GitHub UI
     inputs:
       dry_run:
         description: 'Run with mock extraction (no Gemini API calls)'
+        required: false
+        default: false
+        type: boolean
+      no_wait:
+        description: 'Bypass 07:00 AM PKT wait gate (instant execution for testing)'
         required: false
         default: false
         type: boolean
@@ -40,25 +47,30 @@ jobs:
       - name: Run Daily Scholarship Intelligence Pipeline
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GEMINI_MODEL: ${{ secrets.GEMINI_MODEL || 'gemini-3.5-flash-lite' }}
           RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
-          RESEND_FROM_EMAIL: ${{ secrets.RESEND_FROM_EMAIL }}
+          RESEND_FROM_EMAIL: ${{ secrets.RESEND_FROM_EMAIL || 'onboarding@resend.dev' }}
           GMAIL_USER: ${{ secrets.GMAIL_USER }}
           GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
           OWNER_EMAIL: ${{ secrets.OWNER_EMAIL || 'muhammadtalhapro1@gmail.com' }}
-          FORWARD_EMAIL: ${{ secrets.FORWARD_EMAIL }}
+          RECIPIENT_EMAIL: ${{ secrets.RECIPIENT_EMAIL || 'muhammadtalhapro1@gmail.com' }}
+          EMAIL_ATTACHMENT_FORMATS: ${{ secrets.EMAIL_ATTACHMENT_FORMATS || 'pdf' }}
         run: |
+          EXTRA_ARGS=""
           if [ "${{ inputs.dry_run }}" = "true" ]; then
-            python main.py run --dry-run
-          else
-            python main.py run
+            EXTRA_ARGS="$EXTRA_ARGS --dry-run"
           fi
+          if [ "${{ inputs.no_wait }}" = "true" ]; then
+            EXTRA_ARGS="$EXTRA_ARGS --no-wait"
+          fi
+          python main.py run $EXTRA_ARGS
 
       - name: Commit Updated Data & Reports to Git Repository
         if: always()
         run: |
           git config --local user.email "actions@github.com"
           git config --local user.name "Scholarship Intelligence Agent"
-          git add data/ reports/
+          git add data/opportunities.db data/scholarships.json reports/
           if git diff --staged --quiet; then
             echo "No new reports or state changes to commit."
           else

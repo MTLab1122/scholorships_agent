@@ -1,0 +1,146 @@
+/* ==========================================================================
+   Design System Tokens — Light (Default) & Dark Themes
+   Student Opportunity Intelligence Platform
+   ========================================================================== */
+
+:root {
+    /* Color Palette - Light Theme (Initial Default) */
+    --bg-body: #F8FAFC;
+    --bg-surface: #F1F5F9;
+    --bg-card: #FFFFFF;
+    --bg-card-hover: #F8FAFC;
+    --bg-sidebar: #0F172A;
+    --bg-sidebar-hover: #1E293B;
+    --bg-topbar: #FFFFFF;
+    
+    /* Borders */
+    --border-subtle: #E2E8F0;
+    --border-strong: #CBD5E1;
+    --border-focus: #0284C7;
+    
+    /* Typography Colors */
+    --text-primary: #0F172A;
+    --text-secondary: #475569;
+    --text-muted: #64748B;
+    --text-inverted: #FFFFFF;
+    --text-sidebar: #94A3B8;
+    --text-sidebar-active: #38BDF8;
+    
+    /* Brand Primary & Accents */
+    --primary: #0284C7;          /* Sky / Ocean 600 */
+    --primary-hover: #0369A1;
+    --primary-light: #E0F2FE;
+    --primary-glow: rgba(2, 132, 199, 0.15);
+    
+    --navy-brand: #0F172A;
+    --accent: #6366F1;           /* Indigo 500 */
+    --accent-light: #EEF2FF;
+    
+    /* Functional Semantic Colors */
+    --success: #16A34A;          /* Green 600 */
+    --success-bg: #DCFCE7;
+    --success-border: #86EFAC;
+    
+    --warning: #D97706;          /* Amber 600 */
+    --warning-bg: #FEF3C7;
+    --warning-border: #FCD34D;
+    
+    --danger: #DC2626;           /* Red 600 */
+    --danger-bg: #FEE2E2;
+    --danger-border: #FCA5A5;
+    
+    --info: #0284C7;
+    --info-bg: #E0F2FE;
+    --info-border: #7DD3FC;
+    
+    /* Priority Regional Badges */
+    --charsadda-color: #D97706;
+    --charsadda-bg: #FEF3C7;
+    --kp-color: #15803D;
+    --kp-bg: #DCFCE7;
+    
+    /* Elevation Shadows */
+    --shadow-sm: 0 1px 2px 0 rgba(15, 23, 42, 0.05);
+    --shadow-md: 0 4px 6px -1px rgba(15, 23, 42, 0.08), 0 2px 4px -2px rgba(15, 23, 42, 0.06);
+    --shadow-lg: 0 10px 15px -3px rgba(15, 23, 42, 0.1), 0 4px 6px -4px rgba(15, 23, 42, 0.05);
+    --shadow-xl: 0 20px 25px -5px rgba(15, 23, 42, 0.12), 0 8px 10px -6px rgba(15, 23, 42, 0.08);
+    
+    /* Radii */
+    --radius-sm: 4px;
+    --radius-md: 8px;
+    --radius-lg: 12px;
+    --radius-xl: 16px;
+    --radius-full: 9999px;
+    
+    /* Spacing & Sizing */
+    --sidebar-width: 260px;
+    --sidebar-collapsed-width: 72px;
+    --topbar-height: 64px;
+    
+    /* Typography Font Stacks */
+    --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+    
+    /* Transitions */
+    --transition-fast: 0.15s ease-in-out;
+    --transition-base: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ==========================================================================
+   Dark Theme (Activated via [data-theme="dark"] on <html> or <body>)
+   ========================================================================== */
+[data-theme="dark"] {
+    --bg-body: #0B1120;
+    --bg-surface: #151F30;
+    --bg-card: #1E293B;
+    --bg-card-hover: #27354A;
+    --bg-sidebar: #070B14;
+    --bg-sidebar-hover: #151F30;
+    --bg-topbar: #0F172A;
+    
+    --border-subtle: #334155;
+    --border-strong: #475569;
+    --border-focus: #38BDF8;
+    
+    --text-primary: #F8FAFC;
+    --text-secondary: #CBD5E1;
+    --text-muted: #94A3B8;
+    --text-inverted: #0F172A;
+    --text-sidebar: #94A3B8;
+    --text-sidebar-active: #38BDF8;
+    
+    --primary: #38BDF8;          /* Sky 400 */
+    --primary-hover: #7DD3FC;
+    --primary-light: rgba(56, 189, 248, 0.15);
+    --primary-glow: rgba(56, 189, 248, 0.25);
+    
+    --navy-brand: #38BDF8;
+    --accent: #818CF8;           /* Indigo 400 */
+    --accent-light: rgba(129, 140, 248, 0.15);
+    
+    --success: #22C55E;
+    --success-bg: rgba(34, 197, 94, 0.15);
+    --success-border: rgba(34, 197, 94, 0.3);
+    
+    --warning: #F59E0B;
+    --warning-bg: rgba(245, 158, 11, 0.15);
+    --warning-border: rgba(245, 158, 11, 0.3);
+    
+    --danger: #EF4444;
+    --danger-bg: rgba(239, 68, 68, 0.15);
+    --danger-border: rgba(239, 68, 68, 0.3);
+    
+    --info: #38BDF8;
+    --info-bg: rgba(56, 189, 248, 0.15);
+    --info-border: rgba(56, 189, 248, 0.3);
+    
+    --charsadda-color: #F59E0B;
+    --charsadda-bg: rgba(245, 158, 11, 0.15);
+    --kp-color: #22C55E;
+    --kp-bg: rgba(34, 197, 94, 0.15);
+    
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.4);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.5), 0 2px 4px -2px rgba(0, 0, 0, 0.4);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.6), 0 4px 6px -4px rgba(0, 0, 0, 0.5);
+    --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.7), 0 8px 10px -6px rgba(0, 0, 0, 0.6);
+}

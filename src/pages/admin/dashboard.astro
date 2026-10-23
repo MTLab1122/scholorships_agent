@@ -1,0 +1,175 @@
+---
+import AdminLayout from '../../layouts/AdminLayout.astro';
+import { api } from '../../lib/api';
+
+let metrics = {
+  total_opportunities: 0,
+  open_opportunities: 0,
+  closing_soon: 0,
+  scholarships_count: 0,
+  internships_count: 0,
+  unverified_count: 0,
+  upcoming_deadlines: 0,
+  total_students: 0,
+  total_reports: 0,
+  total_sources: 0,
+  sources_attention: 0,
+  total_applications: 0,
+  category_distribution: {} as Record<string, number>,
+  university_type_distribution: {} as Record<string, number>,
+  status_distribution: {} as Record<string, number>,
+  scope_distribution: { national: 0, international: 0 }
+};
+
+try {
+  metrics = await api.getMetrics();
+} catch (e) {
+  console.error("Failed to fetch dashboard metrics:", e);
+}
+
+const kpis = [
+  { label: 'Total Opportunities', value: metrics.total_opportunities, sub: 'Active & Cataloged', icon: '🎯', color: 'text-sky-600 dark:text-sky-400 bg-sky-50 dark:bg-sky-950/50' },
+  { label: 'Open Opportunities', value: metrics.open_opportunities, sub: `${metrics.closing_soon} closing soon (<7d)`, icon: '⏳', color: 'text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/50' },
+  { label: 'Scholarships', value: metrics.scholarships_count, sub: 'National & Global', icon: '🎓', color: 'text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-950/50' },
+  { label: 'Internships', value: metrics.internships_count, sub: 'Domestic & Virtual', icon: '💼', color: 'text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/50' },
+  { label: 'Awaiting Verification', value: metrics.unverified_count, sub: 'Quality Assurance Queue', icon: '🛡️', color: 'text-rose-600 dark:text-rose-400 bg-rose-50 dark:bg-rose-950/50' },
+  { label: 'Upcoming Deadlines', value: metrics.upcoming_deadlines, sub: '<= 30 days left', icon: '📅', color: 'text-violet-600 dark:text-violet-400 bg-violet-50 dark:bg-violet-950/50' },
+  { label: 'Students Registered', value: metrics.total_students, sub: 'Active Profiles', icon: '👥', color: 'text-teal-600 dark:text-teal-400 bg-teal-50 dark:bg-teal-950/50' },
+  { label: 'Reports Published', value: metrics.total_reports, sub: 'PDF, Excel, CSV, HTML', icon: '📑', color: 'text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-950/50' },
+];
+---
+
+<AdminLayout pageTitle="Dashboard">
+  <div class="space-y-6">
+    <!-- Top Action Header -->
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div>
+        <h1 class="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">
+          Admin Control Center
+        </h1>
+        <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">
+          Operational telemetry and autonomous intelligence orchestration.
+        </p>
+      </div>
+
+      <div class="flex items-center gap-2.5">
+        <a
+          href="/admin/opportunities"
+          class="px-3.5 py-2 text-xs font-semibold bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-750 transition-colors shadow-sm"
+        >
+          Explore Catalog
+        </a>
+        <a
+          href="/admin/reports"
+          class="px-4 py-2 text-xs font-semibold bg-sky-600 hover:bg-sky-700 text-white rounded-xl transition-colors shadow-sm"
+        >
+          Generate 20 Reports →
+        </a>
+      </div>
+    </div>
+
+    <!-- 8 KPI Metric Cards -->
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+      {kpis.map((kpi) => (
+        <div class="bg-white dark:bg-slate-800 p-4 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm flex items-start justify-between">
+          <div>
+            <div class="text-xs font-semibold text-slate-500 dark:text-slate-400">
+              {kpi.label}
+            </div>
+            <div class="text-2xl font-black text-slate-900 dark:text-white mt-1">
+              {kpi.value}
+            </div>
+            <div class="text-[11px] text-slate-400 mt-0.5">
+              {kpi.sub}
+            </div>
+          </div>
+          <div class={`w-9 h-9 rounded-xl flex items-center justify-center text-lg ${kpi.color}`}>
+            {kpi.icon}
+          </div>
+        </div>
+      ))}
+    </div>
+
+    <!-- Middle Split: Category Breakdown + Sector Eligibility -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <!-- Category Breakdown -->
+      <div class="lg:col-span-2 bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm space-y-4">
+        <div class="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-700">
+          <h2 class="text-sm font-bold text-slate-900 dark:text-white">
+            Catalog Distribution by Opportunity Category
+          </h2>
+          <span class="text-xs font-semibold text-sky-600 dark:text-sky-400">
+            {metrics.total_opportunities} Total Records
+          </span>
+        </div>
+
+        <div class="space-y-3">
+          {Object.entries(metrics.category_distribution || {}).map(([cat, count]) => {
+            const pct = Math.round((count / (metrics.total_opportunities || 1)) * 100);
+            return (
+              <div class="space-y-1 text-xs">
+                <div class="flex items-center justify-between font-medium">
+                  <span class="capitalize text-slate-700 dark:text-slate-300">
+                    {cat.replace(/_/g, ' ')}
+                  </span>
+                  <span class="text-slate-500 dark:text-slate-400 font-mono">
+                    {count} ({pct}%)
+                  </span>
+                </div>
+                <div class="w-full bg-slate-100 dark:bg-slate-700 h-2 rounded-full overflow-hidden">
+                  <div
+                    class="bg-sky-500 h-full rounded-full transition-all duration-500"
+                    style={`width: ${pct}%`}
+                  ></div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      <!-- University Sector Eligibility & Scope -->
+      <div class="space-y-6">
+        <!-- University Types -->
+        <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm space-y-3">
+          <h3 class="text-xs font-bold text-slate-900 dark:text-white uppercase tracking-wider">
+            Sector Eligibility Breakdown
+          </h3>
+          <div class="space-y-2 text-xs">
+            {Object.entries(metrics.university_type_distribution || {}).map(([sector, count]) => (
+              <div class="flex items-center justify-between p-2 rounded-lg bg-slate-50 dark:bg-slate-900/40">
+                <span class="font-medium capitalize text-slate-700 dark:text-slate-300">
+                  {sector === 'both' ? 'Public & Private' : sector}
+                </span>
+                <span class="font-bold text-slate-900 dark:text-white font-mono">
+                  {count}
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <!-- National vs International -->
+        <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm space-y-3">
+          <h3 class="text-xs font-bold text-slate-900 dark:text-white uppercase tracking-wider">
+            Geographic Scope Distribution
+          </h3>
+          <div class="grid grid-cols-2 gap-3 text-center text-xs">
+            <div class="p-3 bg-emerald-50 dark:bg-emerald-950/40 rounded-xl border border-emerald-100 dark:border-emerald-800/40">
+              <div class="text-emerald-600 dark:text-emerald-400 font-bold">National Pakistan</div>
+              <div class="text-xl font-extrabold text-slate-900 dark:text-white mt-1">
+                {metrics.scope_distribution?.national || 0}
+              </div>
+            </div>
+            <div class="p-3 bg-sky-50 dark:bg-sky-950/40 rounded-xl border border-sky-100 dark:border-sky-800/40">
+              <div class="text-sky-600 dark:text-sky-400 font-bold">International Global</div>
+              <div class="text-xl font-extrabold text-slate-900 dark:text-white mt-1">
+                {metrics.scope_distribution?.international || 0}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</AdminLayout>

@@ -1,0 +1,106 @@
+---
+import Layout from '../layouts/Layout.astro';
+import ThemeToggle from '../components/react/ThemeToggle';
+---
+
+<Layout title="404 — Opportunity Not Found | Student Opportunity Intelligence Platform">
+  <div class="min-h-screen flex flex-col justify-between bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 transition-colors">
+    <!-- Navbar -->
+    <header class="px-6 py-4 flex items-center justify-between border-b border-slate-200 dark:border-slate-800 bg-white/70 dark:bg-slate-900/70 backdrop-blur sticky top-0 z-20">
+      <a href="/" class="flex items-center gap-2.5">
+        <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-sky-500 to-indigo-600 flex items-center justify-center text-white font-black text-lg shadow-md shadow-sky-500/20">
+          🎓
+        </div>
+        <div>
+          <span class="font-bold text-sm tracking-tight text-slate-900 dark:text-white">Opportunity</span>
+          <span class="text-sky-600 dark:text-sky-400 font-bold text-sm ml-1">Intelligence</span>
+        </div>
+      </a>
+
+      <div class="flex items-center gap-3">
+        <ThemeToggle client:load />
+        <a
+          href="/"
+          class="text-xs font-semibold px-3 py-1.5 rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-700"
+        >
+          Return Home
+        </a>
+      </div>
+    </header>
+
+    <!-- Main 404 Center -->
+    <main class="flex-1 max-w-3xl mx-auto w-full px-6 py-16 flex flex-col items-center text-center justify-center">
+      <!-- 404 Badge Glow -->
+      <div class="relative mb-6">
+        <div class="w-24 h-24 rounded-3xl bg-gradient-to-tr from-sky-500/20 via-indigo-500/20 to-purple-500/20 border border-sky-500/30 flex items-center justify-center text-4xl shadow-2xl backdrop-blur-sm animate-pulse">
+          🔍
+        </div>
+        <span class="absolute -top-2 -right-2 px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold bg-rose-500 text-white shadow">
+          HTTP 404
+        </span>
+      </div>
+
+      <h1 class="text-3xl md:text-4xl font-extrabold tracking-tight text-slate-900 dark:text-white">
+        Opportunity Not Found
+      </h1>
+
+      <p class="mt-3 text-sm text-slate-600 dark:text-slate-400 max-w-md leading-relaxed">
+        The link, report, or intelligence portal you requested may have moved, expired, or been reorganized by the autonomous discovery fleet.
+      </p>
+
+      <!-- Quick Action Cards Grid -->
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-10 w-full max-w-xl text-left">
+        <a
+          href="/student/opportunities"
+          class="p-4 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm hover:border-sky-500 hover:shadow-md transition-all group"
+        >
+          <div class="text-xl mb-1 group-hover:scale-110 transition-transform">🔭</div>
+          <div class="text-xs font-bold text-slate-900 dark:text-white">Explore Catalog</div>
+          <div class="text-[11px] text-slate-500 mt-0.5">Browse active scholarships</div>
+        </a>
+
+        <a
+          href="/student/dashboard"
+          class="p-4 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm hover:border-sky-500 hover:shadow-md transition-all group"
+        >
+          <div class="text-xl mb-1 group-hover:scale-110 transition-transform">🎓</div>
+          <div class="text-xs font-bold text-slate-900 dark:text-white">Student Portal</div>
+          <div class="text-[11px] text-slate-500 mt-0.5">Access matches & tracker</div>
+        </a>
+
+        <a
+          href="/admin/dashboard"
+          class="p-4 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm hover:border-sky-500 hover:shadow-md transition-all group"
+        >
+          <div class="text-xl mb-1 group-hover:scale-110 transition-transform">⚡</div>
+          <div class="text-xs font-bold text-slate-900 dark:text-white">Admin Center</div>
+          <div class="text-[11px] text-slate-500 mt-0.5">Control 15 AI agents</div>
+        </a>
+      </div>
+
+      <!-- Search shortcut bar -->
+      <div class="mt-8 w-full max-w-md">
+        <form action="/student/opportunities" method="GET" class="relative flex items-center">
+          <input
+            type="text"
+            name="search"
+            placeholder="Search opportunities (e.g., HEC, Charsadda, Fulbright)..."
+            class="w-full pl-10 pr-24 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-white text-xs shadow-sm focus:ring-2 focus:ring-sky-500 outline-none"
+          />
+          <span class="absolute left-3 text-slate-400 text-sm">🔍</span>
+          <button
+            type="submit"
+            class="absolute right-1.5 px-3 py-1.5 rounded-lg bg-sky-500 hover:bg-sky-400 text-white text-xs font-bold shadow"
+          >
+            Search
+          </button>
+        </form>
+      </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="py-6 px-6 border-t border-slate-200 dark:border-slate-800 text-center text-xs text-slate-500">
+      Student Opportunity Intelligence Platform • Page Not Found (404)
+    </footer>
+  </div>
+</Layout>

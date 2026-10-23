@@ -1,0 +1,20 @@
+---
+import AdminLayout from '../../layouts/AdminLayout.astro';
+import WorkflowVisualizer from '../../components/react/WorkflowVisualizer';
+---
+
+<AdminLayout pageTitle="Workflows">
+  <div class="space-y-6">
+    <div>
+      <h1 class="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">
+        Workflow Pipeline & Stage Orchestration
+      </h1>
+      <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">
+        Sequential execution pipeline: Discovery → Extraction → Classification → Verification → Matching → 20 Reports.
+      </p>
+    </div>
+
+    <!-- Workflow Visualizer React Island -->
+    <WorkflowVisualizer client:load />
+  </div>
+</AdminLayout>

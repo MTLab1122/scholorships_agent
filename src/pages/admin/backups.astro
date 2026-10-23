@@ -1,0 +1,10 @@
+---
+import AdminLayout from '../../layouts/AdminLayout.astro';
+import BackupsManager from '../../components/react/BackupsManager';
+import ToastContainer from '../../components/react/Toast';
+---
+
+<AdminLayout pageTitle="Database Backups & Disaster Recovery">
+  <ToastContainer client:load />
+  <BackupsManager client:load />
+</AdminLayout>

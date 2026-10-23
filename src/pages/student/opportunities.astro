@@ -1,0 +1,22 @@
+---
+import StudentLayout from '../../layouts/StudentLayout.astro';
+import OpportunityTable from '../../components/react/OpportunityTable';
+
+const searchParam = Astro.url.searchParams.get('search') || '';
+---
+
+<StudentLayout pageTitle="Explore Opportunities">
+  <div class="space-y-6">
+    <div>
+      <h1 class="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">
+        Explore Opportunities Catalog
+      </h1>
+      <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">
+        Filter opportunities by your current semester, public/private university sector, funding, and domicile eligibility.
+      </p>
+    </div>
+
+    <!-- Opportunity Table React Island in Student Mode with Bookmark functionality -->
+    <OpportunityTable client:load isAdmin={false} initialSearch={searchParam} studentId="student-charsadda-cs-01" />
+  </div>
+</StudentLayout>

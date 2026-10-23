@@ -1,0 +1,33 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Sidebar from '../components/Sidebar.astro';
+import Header from '../components/Header.astro';
+import NotificationsList from '../components/react/NotificationsList';
+
+const currentPath = Astro.url.pathname;
+---
+
+<Layout title="Notifications | Student Opportunity Intelligence">
+  <div class="flex min-h-screen">
+    <!-- Default Student/Admin Sidebar -->
+    <Sidebar role="student" currentPath={currentPath} />
+
+    <!-- Main Content Container -->
+    <div class="flex-1 flex flex-col min-w-0 bg-slate-50 dark:bg-slate-950 transition-colors">
+      <Header role="student" pageTitle="Notifications" />
+      <main class="flex-1 p-6 md:p-8 max-w-7xl w-full mx-auto animate-fade-in space-y-6">
+        <div>
+          <h1 class="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">
+            Notifications & Deadline Reminders
+          </h1>
+          <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">
+            Real-time deadline warnings, new opportunity matches, and system digest dispatches.
+          </p>
+        </div>
+
+        <!-- Notifications List React Island -->
+        <NotificationsList client:load studentId="student-charsadda-cs-01" />
+      </main>
+    </div>
+  </div>
+</Layout>

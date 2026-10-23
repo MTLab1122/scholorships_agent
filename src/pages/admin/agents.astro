@@ -1,0 +1,20 @@
+---
+import AdminLayout from '../../layouts/AdminLayout.astro';
+import AgentCardList from '../../components/react/AgentCardList';
+---
+
+<AdminLayout pageTitle="15 AI Agents">
+  <div class="space-y-6">
+    <div>
+      <h1 class="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">
+        Autonomous AI Agent Fleet
+      </h1>
+      <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">
+        Monitor operational statuses, model parameters, execution telemetries, and trigger routine runs.
+      </p>
+    </div>
+
+    <!-- Agent Card List React Island -->
+    <AgentCardList client:load />
+  </div>
+</AdminLayout>

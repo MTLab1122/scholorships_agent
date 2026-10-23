@@ -1,0 +1,125 @@
+---
+import StudentLayout from '../../layouts/StudentLayout.astro';
+import { api } from '../../lib/api';
+import type { StudentMatch } from '../../lib/types';
+
+let matches: StudentMatch[] = [];
+try {
+  const res = await api.getStudentMatches('student-charsadda-cs-01');
+  matches = res.matches || [];
+} catch (e) {
+  console.error("Match fetch error:", e);
+}
+---
+
+<StudentLayout pageTitle="Personalized Recommendations">
+  <div class="space-y-6">
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+      <div>
+        <h1 class="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">
+          Personalized Opportunity Recommendations
+        </h1>
+        <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">
+          Scored transparently (0–100%) against your current semester, CGPA cutoff, degree level, and Charsadda/KP domicile quotas.
+        </p>
+      </div>
+
+      <div class="px-3.5 py-1.5 rounded-lg bg-emerald-50 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800/40 text-xs font-bold">
+        {matches.length} Qualified Matches
+      </div>
+    </div>
+
+    <!-- Recommendations List -->
+    <div class="space-y-4">
+      {matches.map((m) => (
+        <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm space-y-4 hover:border-sky-300 dark:hover:border-sky-600 transition-all">
+          <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 border-b border-slate-100 dark:border-slate-700 pb-3">
+            <div>
+              <div class="text-xs font-semibold text-sky-600 dark:text-sky-400 capitalize">
+                {m.category}
+              </div>
+              <h2 class="text-base font-bold text-slate-900 dark:text-white mt-0.5">
+                {m.opportunity_name}
+              </h2>
+              <div class="text-xs text-slate-500 mt-0.5">
+                Offered by: {m.sponsor} (ID: <code>{m.opportunity_id}</code>)
+              </div>
+            </div>
+
+            <div class="flex items-center gap-3">
+              <div class="text-right">
+                <div class="text-xs font-semibold text-slate-400">Match Score</div>
+                <div class="text-xl font-black text-emerald-600 dark:text-emerald-400">
+                  {m.match_score}%
+                </div>
+              </div>
+              <div class="w-12 h-12 rounded-xl bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800/40 flex items-center justify-center font-black text-sm">
+                {m.match_score >= 80 ? 'HIGH' : 'MED'}
+              </div>
+            </div>
+          </div>
+
+          <!-- Matching Explanations -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+            {/* Criteria Satisfied */}
+            <div class="p-3.5 bg-emerald-50/60 dark:bg-emerald-950/30 rounded-xl border border-emerald-200/60 dark:border-emerald-900/40 space-y-2">
+              <span class="font-bold text-emerald-800 dark:text-emerald-300 flex items-center gap-1.5">
+                <span>✓</span> Requirements Satisfied:
+              </span>
+              <ul class="space-y-1 text-slate-700 dark:text-slate-300">
+                {m.reasons.map((r) => (
+                  <li class="flex items-start gap-1.5">
+                    <span class="text-emerald-500 font-bold">•</span> {r}
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Unknown or Gap Requirements */}
+            <div class="p-3.5 bg-slate-50 dark:bg-slate-900/40 rounded-xl border border-slate-200 dark:border-slate-700/60 space-y-2">
+              <span class="font-bold text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
+                <span>ℹ️</span> Verification Gaps / Unknowns:
+              </span>
+              {m.missing_eligibility_fields?.length > 0 ? (
+                <ul class="space-y-1 text-slate-600 dark:text-slate-400">
+                  {m.missing_eligibility_fields.map((f) => (
+                    <li class="flex items-start gap-1.5">
+                      <span class="text-amber-500 font-bold">•</span> Specific requirement for <code>{f}</code> not stated in announcement.
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p class="text-slate-500 italic">All eligibility criteria fully identified and satisfied.</p>
+              )}
+            </div>
+          </div>
+
+          <!-- Action Footer -->
+          <div class="pt-2 flex items-center justify-between text-xs">
+            <span class="text-slate-400">
+              Deadline: <strong class="text-slate-700 dark:text-slate-300">{m.deadline || 'Ongoing'}</strong>
+            </span>
+            <div class="flex items-center gap-2">
+              {m.official_url && (
+                <a
+                  href={m.official_url}
+                  target="_blank"
+                  rel="noreferrer"
+                  class="px-3.5 py-1.5 font-semibold text-sky-600 dark:text-sky-400 hover:bg-sky-50 dark:hover:bg-sky-950/40 rounded-lg border border-sky-200 dark:border-sky-800/40 transition-colors"
+                >
+                  Visit Portal ↗
+                </a>
+              )}
+              <a
+                href="/student/prep"
+                class="px-4 py-1.5 font-semibold bg-sky-600 text-white rounded-lg hover:bg-sky-700 transition-colors"
+              >
+                Start Preparation
+              </a>
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+</StudentLayout>

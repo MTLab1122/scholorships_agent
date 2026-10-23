@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Student Opportunity Intelligence Platform — Autonomous multi-agent scholarship, internship, and research funding discovery system for Pakistani students.">
+  <title>Student Opportunity Intelligence | Discover. Qualify. Apply. Achieve.</title>
+
+  <!-- Typography & Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <!-- Design System & Stylesheets -->
+  <link rel="stylesheet" href="/static/css/tokens.css">
+  <link rel="stylesheet" href="/static/css/layout.css">
+  <link rel="stylesheet" href="/static/css/components.css">
+</head>
+<body>
+  <!-- Mobile Sidebar Overlay Backdrop -->
+  <div id="sidebar-overlay" class="sidebar-overlay" onclick="closeMobileSidebar()"></div>
+
+  <div id="app" class="app-layout">
+    <!-- Collapsible Sidebar -->
+    <aside id="main-sidebar" class="sidebar">
+      <div class="sidebar-header">
+        <div class="brand-logo" onclick="showView(State.role === 'admin' ? 'admin-dashboard' : 'student-dashboard')" style="cursor: pointer;">
+          <svg class="brand-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M22 10v6M2 10l10-5 10 5-10 5z"/>
+            <path d="M6 12v5c3 3 9 3 12 0v-5"/>
+          </svg>
+          <div class="brand-text">
+            <span class="brand-title">Opportunity Intelligence</span>
+            <span class="brand-subtitle">Discover. Qualify. Apply. Achieve.</span>
+          </div>
+        </div>
+        <button id="sidebar-close-btn" class="btn-icon mobile-only" onclick="closeMobileSidebar()" aria-label="Close Navigation">
+          ✕
+        </button>
+      </div>
+
+      <!-- Role Mode Switcher Pill in Sidebar -->
+      <div class="role-selector-container" style="padding: 0.5rem 0.75rem;">
+        <div class="role-switch" id="role-toggle-group" style="display: flex; gap: 4px; background: rgba(0,0,0,0.25); border-radius: var(--radius-md); padding: 4px;">
+          <button type="button" class="btn btn-sm" id="role-student-btn" onclick="State.setRole('student'); showView('student-dashboard');" style="flex: 1; font-size: 0.75rem; padding: 4px 8px;">
+            🎓 Student
+          </button>
+          <button type="button" class="btn btn-sm" id="role-admin-btn" onclick="State.setRole('admin'); showView('admin-dashboard');" style="flex: 1; font-size: 0.75rem; padding: 4px 8px;">
+            ⚡ Admin
+          </button>
+        </div>
+      </div>
+
+      <!-- Navigation Menus -->
+      <nav class="sidebar-nav" id="sidebar-nav">
+        <!-- ADMIN NAVIGATION GROUPS -->
+        <div class="nav-group-admin">
+          <div class="nav-group-title">Overview</div>
+          <ul class="nav-list">
+            <li><a class="nav-link active" data-view="admin-dashboard" onclick="showView('admin-dashboard')"><span class="nav-icon">📊</span><span class="nav-label">Dashboard</span></a></li>
+            <li><a class="nav-link" data-view="admin-health" onclick="showView('admin-health')"><span class="nav-icon">⚡</span><span class="nav-label">Activity Center</span></a></li>
+            <li><a class="nav-link" data-view="notifications" onclick="showView('notifications')"><span class="nav-icon">🔔</span><span class="nav-label">Notifications</span></a></li>
+          </ul>
+        </div>
+
+        <div class="nav-group-admin" style="margin-top: 1rem;">
+          <div class="nav-group-title">Intelligence</div>
+          <ul class="nav-list">
+            <li><a class="nav-link" data-view="admin-opportunities" onclick="showView('admin-opportunities')"><span class="nav-icon">🔍</span><span class="nav-label">Opportunity Explorer</span></a></li>
+            <li><a class="nav-link" data-view="admin-students" onclick="showView('admin-students')"><span class="nav-icon">🎯</span><span class="nav-label">Student Matching</span></a></li>
+            <li><a class="nav-link" data-view="admin-verification" onclick="showView('admin-verification')"><span class="nav-icon">🛡️</span><span class="nav-label">Verification Queue</span></a></li>
+          </ul>
+        </div>
+
+        <div class="nav-group-admin" style="margin-top: 1rem;">
+          <div class="nav-group-title">Reports</div>
+          <ul class="nav-list">
+            <li><a class="nav-link" data-view="admin-reports" onclick="showView('admin-reports')"><span class="nav-icon">📑</span><span class="nav-label">20 Report Center</span></a></li>
+            <li><a class="nav-link" data-view="admin-reports" onclick="showView('admin-reports')"><span class="nav-icon">📂</span><span class="nav-label">Generated Files</span></a></li>
+          </ul>
+        </div>
+
+        <div class="nav-group-admin" style="margin-top: 1rem;">
+          <div class="nav-group-title">Automation</div>
+          <ul class="nav-list">
+            <li><a class="nav-link" data-view="admin-agents" onclick="showView('admin-agents')"><span class="nav-icon">🤖</span><span class="nav-label">15 AI Agents</span></a></li>
+            <li><a class="nav-link" data-view="admin-workflows" onclick="showView('admin-workflows')"><span class="nav-icon">🔄</span><span class="nav-label">Workflow Runs</span></a></li>
+            <li><a class="nav-link" data-view="admin-schedules" onclick="showView('admin-schedules')"><span class="nav-icon">⏰</span><span class="nav-label">Schedules</span></a></li>
+            <li><a class="nav-link" data-view="admin-sources" onclick="showView('admin-sources')"><span class="nav-icon">🌐</span><span class="nav-label">Source Registry</span></a></li>
+          </ul>
+        </div>
+
+        <div class="nav-group-admin" style="margin-top: 1rem;">
+          <div class="nav-group-title">Students & Users</div>
+          <ul class="nav-list">
+            <li><a class="nav-link" data-view="admin-students" onclick="showView('admin-students')"><span class="nav-icon">👥</span><span class="nav-label">Student Directory</span></a></li>
+          </ul>
+        </div>
+
+        <div class="nav-group-admin" style="margin-top: 1rem;">
+          <div class="nav-group-title">Administration</div>
+          <ul class="nav-list">
+            <li><a class="nav-link" data-view="admin-settings" onclick="showView('admin-settings')"><span class="nav-icon">⚙️</span><span class="nav-label">System Settings</span></a></li>
+            <li><a class="nav-link" data-view="admin-health" onclick="showView('admin-health')"><span class="nav-icon">📜</span><span class="nav-label">Audit Logs & Health</span></a></li>
+          </ul>
+        </div>
+
+        <!-- STUDENT NAVIGATION GROUPS -->
+        <div class="nav-group-student" style="display: none;">
+          <div class="nav-group-title">Discovery</div>
+          <ul class="nav-list">
+            <li><a class="nav-link" data-view="student-dashboard" onclick="showView('student-dashboard')"><span class="nav-icon">🎓</span><span class="nav-label">Student Dashboard</span></a></li>
+            <li><a class="nav-link" data-view="student-opportunities" onclick="showView('student-opportunities')"><span class="nav-icon">🔍</span><span class="nav-label">Explore Opportunities</span></a></li>
+            <li><a class="nav-link" data-view="student-recommendations" onclick="showView('student-recommendations')"><span class="nav-icon">✨</span><span class="nav-label">My Recommendations</span></a></li>
+            <li><a class="nav-link" data-view="student-saved" onclick="showView('student-saved')"><span class="nav-icon">🔖</span><span class="nav-label">Saved Bookmarks</span></a></li>
+          </ul>
+        </div>
+
+        <div class="nav-group-student" style="display: none; margin-top: 1rem;">
+          <div class="nav-group-title">Applications</div>
+          <ul class="nav-list">
+            <li><a class="nav-link" data-view="student-applications" onclick="showView('student-applications')"><span class="nav-icon">📋</span><span class="nav-label">Application Tracker</span></a></li>
+          </ul>
+        </div>
+
+        <div class="nav-group-student" style="display: none; margin-top: 1rem;">
+          <div class="nav-group-title">Account</div>
+          <ul class="nav-list">
+            <li><a class="nav-link" data-view="student-profile" onclick="showView('student-profile')"><span class="nav-icon">👤</span><span class="nav-label">My Profile</span></a></li>
+            <li><a class="nav-link" data-view="notifications" onclick="showView('notifications')"><span class="nav-icon">🔔</span><span class="nav-label">Notifications</span></a></li>
+          </ul>
+        </div>
+      </nav>
+
+      <!-- Sidebar Footer -->
+      <div class="sidebar-footer">
+        <div class="user-profile-badge" id="current-user-card">
+          <div class="user-avatar" id="sidebar-user-avatar">AD</div>
+          <div class="user-details">
+            <div class="user-name" id="sidebar-user-name">System Administrator</div>
+            <div class="user-role-label" id="sidebar-user-role">Super Admin</div>
+          </div>
+          <button class="btn-icon subtle" onclick="showView('admin-settings')" title="Quick Settings">
+            ⚙️
+          </button>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Container -->
+    <div class="main-container">
+      <!-- Top Navigation Bar -->
+      <header class="topbar">
+        <div class="topbar-left">
+          <button id="btn-sidebar-toggle" class="btn-icon" onclick="toggleMobileSidebar()" aria-label="Toggle Navigation">
+            <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none">
+              <line x1="3" y1="12" x2="21" y2="12"></line>
+              <line x1="3" y1="6" x2="21" y2="6"></line>
+              <line x1="3" y1="18" x2="21" y2="18"></line>
+            </svg>
+          </button>
+
+          <!-- Breadcrumbs -->
+          <nav class="breadcrumbs" id="breadcrumbs" aria-label="Breadcrumb">
+            <span class="breadcrumb-item">Platform</span>
+            <span class="breadcrumb-sep">/</span>
+            <span class="breadcrumb-item active" id="current-role-badge">Admin Control Center</span>
+          </nav>
+        </div>
+
+        <!-- Global Search Bar -->
+        <div class="topbar-center search-container">
+          <div class="global-search-wrapper" style="position: relative;">
+            <svg class="search-icon" viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none">
+              <circle cx="11" cy="11" r="8"></circle>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+            <input type="text" id="global-search-input" class="global-search-input" placeholder="Search opportunities, agents, reports (Press '/' to focus)..." oninput="handleGlobalSearch(this.value)" autocomplete="off">
+            <kbd class="search-shortcut">/</kbd>
+
+            <!-- Search Dropdown Results -->
+            <div id="search-results-dropdown" class="search-results-dropdown"></div>
+          </div>
+        </div>
+
+        <div class="topbar-right">
+          <!-- Role Switcher Pill -->
+          <button class="role-badge-pill" id="btn-role-badge" onclick="State.toggleRole()" title="Click to toggle Admin / Student View">
+            <span class="indicator"></span>
+            <span id="role-badge-text">Switch Mode</span>
+          </button>
+
+          <!-- Notification Bell -->
+          <button id="btn-notifications-toggle" class="btn-icon" onclick="showView('notifications')" aria-label="Notifications" title="Notifications" style="position: relative;">
+            <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none">
+              <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+              <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+            </svg>
+            <span id="topbar-notification-badge" class="nav-badge" style="display:none; position: absolute; top: 2px; right: 2px; background: #EF4444; font-size: 0.65rem;">0</span>
+          </button>
+
+          <!-- Theme Toggle -->
+          <button id="theme-toggle-btn" class="btn-icon" onclick="State.toggleTheme()" aria-label="Toggle Theme" title="Toggle Light/Dark Theme">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          </button>
+
+          <!-- API Documentation Link -->
+          <a href="/docs" target="_blank" class="btn-icon" title="API Docs & Swagger">
+            <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none">
+              <circle cx="12" cy="12" r="10"></circle>
+              <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+              <line x1="12" y1="17" x2="12.01" y2="17"></line>
+            </svg>
+          </a>
+        </div>
+      </header>
+
+      <!-- Main Viewport Area with all registered View Panels -->
+      <main class="main-content" id="main-content" tabindex="-1">
+        <!-- ADMIN PANELS -->
+        <div id="view-admin-dashboard" class="view-panel active"></div>
+        <div id="view-admin-agents" class="view-panel"></div>
+        <div id="view-admin-workflows" class="view-panel"></div>
+        <div id="view-admin-opportunities" class="view-panel"></div>
+        <div id="view-admin-verification" class="view-panel"></div>
+        <div id="view-admin-sources" class="view-panel"></div>
+        <div id="view-admin-reports" class="view-panel"></div>
+        <div id="view-admin-schedules" class="view-panel"></div>
+        <div id="view-admin-students" class="view-panel"></div>
+        <div id="view-admin-settings" class="view-panel"></div>
+        <div id="view-admin-health" class="view-panel"></div>
+
+        <!-- STUDENT PANELS -->
+        <div id="view-student-dashboard" class="view-panel"></div>
+        <div id="view-student-opportunities" class="view-panel"></div>
+        <div id="view-student-recommendations" class="view-panel"></div>
+        <div id="view-student-saved" class="view-panel"></div>
+        <div id="view-student-applications" class="view-panel"></div>
+        <div id="view-student-profile" class="view-panel"></div>
+        <div id="view-notifications" class="view-panel"></div>
+      </main>
+    </div>
+  </div>
+
+  <!-- Reusable Modal Container -->
+  <div id="app-modal-container"></div>
+
+  <!-- Reusable Drawer Container -->
+  <div id="app-drawer-container"></div>
+
+  <!-- Toast Notification Container -->
+  <div id="toast-container" class="toast-container" aria-live="polite"></div>
+
+  <!-- Keyboard Shortcut Listener for '/' Search -->
+  <script>
+    document.addEventListener('keydown', (e) => {
+      if (e.key === '/' && document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName !== 'TEXTAREA') {
+        e.preventDefault();
+        const searchInput = document.getElementById('global-search-input');
+        if (searchInput) searchInput.focus();
+      }
+    });
+  </script>
+
+  <!-- Platform Application Scripts -->
+  <script src="/static/js/api.js"></script>
+  <script src="/static/js/state.js"></script>
+  <script src="/static/js/components.js"></script>
+  <script src="/static/js/views-admin.js"></script>
+  <script src="/static/js/views-student.js"></script>
+  <script src="/static/js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,97 @@
+---
+import StudentLayout from '../../layouts/StudentLayout.astro';
+import { api } from '../../lib/api';
+import type { Opportunity } from '../../lib/types';
+
+let saved: Opportunity[] = [];
+try {
+  saved = await api.getSavedOpportunities('student-charsadda-cs-01');
+} catch (e) {
+  console.error("Failed to load saved:", e);
+}
+---
+
+<StudentLayout pageTitle="Saved Opportunities">
+  <div class="space-y-6">
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+      <div>
+        <h1 class="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">
+          Saved Opportunity Bookmarks
+        </h1>
+        <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">
+          Opportunities bookmarked for application preparation, deadline tracking, or faculty consultations.
+        </p>
+      </div>
+
+      <div class="px-3.5 py-1.5 rounded-lg bg-amber-50 dark:bg-amber-950/50 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-800/40 text-xs font-bold">
+        {saved.length} Opportunities Bookmarked
+      </div>
+    </div>
+
+    {saved.length === 0 ? (
+      <div class="p-12 text-center bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-500">
+        <div class="text-3xl mb-2">🔖</div>
+        <h3 class="text-base font-semibold text-slate-800 dark:text-slate-200">No saved opportunities yet</h3>
+        <p class="text-xs mt-1">Browse the Opportunity Explorer or Recommendations to bookmark scholarships and internships.</p>
+        <a
+          href="/student/opportunities"
+          class="inline-block mt-4 px-4 py-2 text-xs font-semibold bg-sky-600 text-white rounded-xl hover:bg-sky-700"
+        >
+          Explore Opportunities →
+        </a>
+      </div>
+    ) : (
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {saved.map((opp) => (
+          <div class="bg-white dark:bg-slate-800 p-5 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm flex flex-col justify-between text-xs space-y-3">
+            <div>
+              <div class="flex items-start justify-between">
+                <div>
+                  <h3 class="font-bold text-sm text-slate-900 dark:text-white line-clamp-1">
+                    {opp.name}
+                  </h3>
+                  <div class="text-[11px] text-slate-500 mt-0.5">
+                    {opp.sponsor} • <span class="capitalize">{opp.category}</span>
+                  </div>
+                </div>
+                <span class="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-100 text-emerald-800 dark:bg-emerald-950/50 dark:text-emerald-300">
+                  {opp.status}
+                </span>
+              </div>
+
+              <div className="mt-3 p-3 bg-slate-50 dark:bg-slate-900/40 rounded-lg text-slate-600 dark:text-slate-300 space-y-1 text-xs">
+                <div>Sector: <strong>{opp.university_types === 'both' ? 'Public & Private' : opp.university_types}</strong></div>
+                <div>Semesters: <strong>{opp.eligible_semesters?.length ? opp.eligible_semesters.join(', ') : 'All (1-8)'}</strong></div>
+                <div>Benefits: <strong>{opp.benefits || 'Full fee waiver or stipend'}</strong></div>
+              </div>
+            </div>
+
+            <div class="pt-2 border-t border-slate-100 dark:border-slate-700 flex items-center justify-between">
+              <span class="text-slate-400">
+                Deadline: <strong>{opp.deadline || 'Ongoing'}</strong>
+              </span>
+              <div class="flex items-center gap-2">
+                {opp.official_url && (
+                  <a
+                    href={opp.official_url}
+                    target="_blank"
+                    rel="noreferrer"
+                    class="px-3 py-1 font-semibold text-sky-600 dark:text-sky-400 hover:bg-sky-50 dark:hover:bg-sky-950/40 rounded border border-sky-200 dark:border-sky-800/40"
+                  >
+                    Portal ↗
+                  </a>
+                )}
+                <a
+                  href="/student/prep"
+                  class="px-3 py-1 font-semibold bg-sky-600 text-white rounded hover:bg-sky-700"
+                >
+                  Prepare Application
+                </a>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    )}
+  </div>
+</StudentLayout>

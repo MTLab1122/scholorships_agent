@@ -1,0 +1,47 @@
+---
+import StudentLayout from '../../layouts/StudentLayout.astro';
+import StudentProfileForm from '../../components/react/StudentProfileForm';
+import { api } from '../../lib/api';
+import type { StudentProfile } from '../../lib/types';
+
+let initialProfile: StudentProfile = {
+  id: 'student-charsadda-cs-01',
+  full_name: 'Muhammad Khan',
+  email: 'student.charsadda@example.com',
+  university: 'Bacha Khan University Charsadda',
+  university_type: 'public',
+  degree_level: 'Undergraduate',
+  discipline: 'Computer Science',
+  current_semester: 4,
+  cgpa: 3.65,
+  domicile_district: 'Charsadda',
+  domicile_province: 'Khyber Pakhtunkhwa',
+  work_preference: 'any',
+  funding_need: 'any'
+};
+
+try {
+  const students = await api.getStudents();
+  if (students.length > 0) {
+    initialProfile = students[0];
+  }
+} catch (e) {
+  console.error("Profile load error:", e);
+}
+---
+
+<StudentLayout pageTitle="My Profile">
+  <div class="space-y-6 max-w-3xl">
+    <div>
+      <h1 class="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">
+        Academic Profile & Preferences
+      </h1>
+      <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">
+        Keep your university, current semester, CGPA, and domicile updated to receive accurate opportunity matching.
+      </p>
+    </div>
+
+    <!-- Student Profile Form React Island -->
+    <StudentProfileForm client:load initialProfile={initialProfile} />
+  </div>
+</StudentLayout>

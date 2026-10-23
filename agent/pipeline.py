@@ -16,6 +16,7 @@ import os
 import json
 import logging
 import datetime
+import time
 from pathlib import Path
 from typing import List, Dict, Any, Tuple, Optional
 from urllib.parse import urlparse
@@ -36,6 +37,8 @@ from generators.html_generator import HTMLReportGenerator
 from generators.csv_generator import CSVReportGenerator
 from generators.excel_generator import ExcelReportGenerator
 from generators.pdf_generator import PDFReportGenerator
+from agent.db import OpportunityDB
+from agent.agents.deadline_agent import DeadlineMonitoringAgent
 
 logger = logging.getLogger(__name__)
 
@@ -108,7 +111,33 @@ class ScholarshipDailyPipeline:
             return load_yaml(sources_path)
         return {"sources": []}
 
-    def run(self, dry_run: bool = False, verify_links: bool = True) -> Dict[str, Any]:
+    def wait_for_0700_pkt_gate(self) -> float:
+        """Exact 07:00:00 AM PKT gate. Holds execution until 07:00:00 AM PKT (Asia/Karachi)."""
+        import datetime as dt_module
+        try:
+            from zoneinfo import ZoneInfo
+            tz_pkt = ZoneInfo("Asia/Karachi")
+        except Exception:
+            tz_pkt = dt_module.timezone(dt_module.timedelta(hours=5))
+
+        now_pkt = dt_module.datetime.now(tz_pkt)
+        target_7am = now_pkt.replace(hour=7, minute=0, second=0, microsecond=0)
+        diff_sec = (target_7am - now_pkt).total_seconds()
+
+        if 0 < diff_sec <= 2700:
+            logger.info(
+                f"[SCHEDULE GATE] Current PKT time is {now_pkt.strftime('%H:%M:%S')}. "
+                f"Holding execution for {diff_sec:.1f}s until exact 07:00:00 AM PKT before dispatching email..."
+            )
+            time.sleep(diff_sec)
+            released_pkt = dt_module.datetime.now(tz_pkt)
+            logger.info(f"[SCHEDULE GATE] Gate released at {released_pkt.strftime('%H:%M:%S')} PKT. Proceeding to email dispatch.")
+            return diff_sec
+        else:
+            logger.info(f"[SCHEDULE GATE] Current PKT time is {now_pkt.strftime('%H:%M:%S')}. Proceeding without sleep gate.")
+            return 0.0
+
+    def run(self, dry_run: bool = False, verify_links: bool = True, wait_for_schedule: bool = False) -> Dict[str, Any]:
         """Runs the complete daily scholarship pipeline."""
         now_pkt = datetime.datetime.now(PKT_TIMEZONE)
         today_date = now_pkt.date()
@@ -192,7 +221,10 @@ class ScholarshipDailyPipeline:
 
         # Step 4: Extraction
         extracted_items: List[ScholarshipExtractionItem] = []
-        for page in fetched_pages:
+        relevant_pages = [p for p in fetched_pages if ContentFetcher.is_relevant_content(p.text)]
+        logger.info(f"Filtered {len(relevant_pages)} relevant pages (from {len(fetched_pages)} total) for structured extraction.")
+
+        for page in relevant_pages:
             items = self.gemini_client.extract_scholarships_from_page(
                 page_text=page.text,
                 source_url=page.url,
@@ -203,10 +235,22 @@ class ScholarshipDailyPipeline:
                 force_mock=dry_run
             )
             extracted_items.extend(items)
+            time.sleep(2.0)  # Rate pacing to respect Gemini free tier RPM limits
 
         logger.info(f"Extracted {len(extracted_items)} raw scholarship items from fetched pages.")
 
         # Step 5: Normalization & Verification
+        if verify_links:
+            urls_to_verify = []
+            for item in extracted_items:
+                if item.apply_url and item.apply_url.startswith("http"):
+                    urls_to_verify.append(item.apply_url)
+                if item.source_url and item.source_url.startswith("http"):
+                    urls_to_verify.append(item.source_url)
+            if urls_to_verify:
+                logger.info(f"Concurrently verifying {len(set(urls_to_verify))} unique links...")
+                self.normalizer.batch_check_links(urls_to_verify)
+
         normalized_new_records: List[ScholarshipRecord] = []
         for item in extracted_items:
             # Check blocklist names
@@ -250,6 +294,25 @@ class ScholarshipDailyPipeline:
         self._save_state(state_file, all_active_records)
         logger.info(f"Saved {len(all_active_records)} merged records to {state_file}")
 
+        # Also sync opportunities to SQLite database data/opportunities.db
+        try:
+            db = OpportunityDB(db_path=self.data_dir / "opportunities.db")
+            for r in all_active_records:
+                db.save_opportunity(r.model_dump())
+            logger.info(f"Synchronized {len(all_active_records)} records to SQLite database {self.data_dir / 'opportunities.db'}")
+        except Exception as d_err:
+            logger.warning(f"Failed to sync SQLite database: {d_err}")
+
+        # Evaluate deadlines with DeadlineMonitoringAgent (Agent 9)
+        deadline_alerts = []
+        try:
+            deadline_agent = DeadlineMonitoringAgent(db=OpportunityDB(db_path=self.data_dir / "opportunities.db"))
+            dl_res = deadline_agent.scan_deadlines()
+            deadline_alerts = dl_res.get("alerts", [])
+            logger.info(f"Agent 9: Identified {len(deadline_alerts)} upcoming deadline alerts.")
+        except Exception as dl_err:
+            logger.warning(f"Deadline agent evaluation error: {dl_err}")
+
         # Step 7: Split into Public and Private reports
         pub_records, priv_records = self._split_reports(all_active_records)
 
@@ -284,6 +347,10 @@ class ScholarshipDailyPipeline:
             today_date_str=today_str
         )
 
+        # Enforce exact 07:00:00 AM PKT gate if running on scheduled cloud trigger
+        if wait_for_schedule:
+            self.wait_for_0700_pkt_gate()
+
         # Step 9: Render HTML, PDF, XLSX, and CSV
         report_dir = self.reports_dir / today_str
         report_dir.mkdir(parents=True, exist_ok=True)
@@ -315,13 +382,24 @@ class ScholarshipDailyPipeline:
 
         email_attachments = [f for f in generated_files if f.suffix.lower() in allowed_exts]
 
+        pipeline_telemetry = {
+            "Total Crawled Sources": f"{len(fetched_pages)} portals",
+            "Public University Opps": f"{len(pub_main)} active",
+            "Private University Opps": f"{len(priv_main)} active",
+            "Deadline Monitoring (Agent 9)": f"{len(deadline_alerts)} deadline warnings",
+            "Charsadda Priority Flagged": f"{pub_summary.charsadda_eligible_count + priv_summary.charsadda_eligible_count} opportunities",
+            "Degraded Mode": "No" if not degraded else "Yes (Fallback sources active)"
+        }
+
         email_sent = self.emailer.send_daily_reports(
             public_summary=pub_summary,
             private_summary=priv_summary,
             attachment_paths=email_attachments,
             degraded=degraded,
             today_pkt=today_str,
-            dry_run=dry_run
+            dry_run=dry_run,
+            deadline_alerts=deadline_alerts,
+            agent_telemetry=pipeline_telemetry
         )
 
         return {

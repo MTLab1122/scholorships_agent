@@ -12,6 +12,9 @@ import requests
 from bs4 import BeautifulSoup
 from pypdf import PdfReader
 
+import urllib3
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+
 logger = logging.getLogger(__name__)
 
 RELEVANT_ANCHOR_PATTERNS = [
@@ -63,6 +66,13 @@ class ContentFetcher:
             "Connection": "keep-alive",
         })
 
+    @staticmethod
+    def is_relevant_content(text: str) -> bool:
+        """Checks if text contains any scholarship, grant, or financial aid terms."""
+        if not text or len(text.strip()) < 50:
+            return False
+        return bool(ANCHOR_REGEX.search(text))
+
     def fetch_url(self, url: str, tier: int = 1, category: str = "") -> Optional[PageContent]:
         """Fetches a URL (HTML or PDF) and extracts text and hyperlinks."""
         try:
@@ -81,6 +91,21 @@ class ContentFetcher:
             # HTML Handling
             return self._parse_html(resp.text, final_url, tier, category)
 
+        except requests.exceptions.SSLError as ssl_err:
+            logger.info(f"SSL certificate validation failed for {url}; retrying with verify=False: {ssl_err}")
+            try:
+                resp = self.session.get(url, timeout=self.timeout, allow_redirects=True, verify=False)
+                if resp.status_code >= 400:
+                    logger.warning(f"HTTP {resp.status_code} when fetching {url}")
+                    return None
+                content_type = resp.headers.get("Content-Type", "").lower()
+                final_url = resp.url
+                if "application/pdf" in content_type or url.lower().endswith(".pdf"):
+                    return self._parse_pdf(resp.content, final_url, tier, category)
+                return self._parse_html(resp.text, final_url, tier, category)
+            except Exception as e2:
+                logger.warning(f"Error fetching {url} after SSL fallback: {e2}")
+                return None
         except Exception as e:
             logger.warning(f"Error fetching {url}: {e}")
             return None

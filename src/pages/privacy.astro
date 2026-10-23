@@ -1,0 +1,134 @@
+---
+import Layout from '../layouts/Layout.astro';
+import ThemeToggle from '../components/react/ThemeToggle';
+---
+
+<Layout title="Privacy Policy | Student Opportunity Intelligence Platform">
+  <div class="min-h-screen flex flex-col justify-between bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 transition-colors">
+    <!-- Navbar -->
+    <header class="px-6 py-4 flex items-center justify-between border-b border-slate-200 dark:border-slate-800 bg-white/70 dark:bg-slate-900/70 backdrop-blur sticky top-0 z-20">
+      <a href="/" class="flex items-center gap-2.5">
+        <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-sky-500 to-indigo-600 flex items-center justify-center text-white font-black text-lg shadow-md shadow-sky-500/20">
+          🎓
+        </div>
+        <div>
+          <span class="font-bold text-sm tracking-tight text-slate-900 dark:text-white">Opportunity</span>
+          <span class="text-sky-600 dark:text-sky-400 font-bold text-sm ml-1">Intelligence</span>
+        </div>
+      </a>
+
+      <div class="flex items-center gap-3">
+        <ThemeToggle client:load />
+        <a
+          href="/login"
+          class="text-xs font-semibold px-3 py-1.5 rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-700"
+        >
+          Sign In
+        </a>
+      </div>
+    </header>
+
+    <!-- Main Legal Content -->
+    <main class="flex-1 max-w-4xl mx-auto w-full px-6 py-12">
+      <div class="mb-8">
+        <div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-sky-50 text-sky-700 dark:bg-sky-950/60 dark:text-sky-300 border border-sky-200 dark:border-sky-800/60 mb-2">
+          🛡️ Compliance & Data Protection
+        </div>
+        <h1 class="text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white">
+          Privacy Policy
+        </h1>
+        <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">
+          Effective Date: October 2026 • Version 2.0.0
+        </p>
+      </div>
+
+      <div class="bg-white dark:bg-slate-900 p-8 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm space-y-8 text-xs leading-relaxed text-slate-700 dark:text-slate-300">
+        <section>
+          <h2 class="text-base font-bold text-slate-900 dark:text-white mb-2">
+            1. Overview & Commitment to Student Privacy
+          </h2>
+          <p>
+            The Student Opportunity Intelligence Platform (SOI) is an autonomous research system built to discover, verify, and match academic scholarships, internships, and grants for university students. We hold student privacy, academic dignity, and data security to the highest ethical and technical standards. We do not sell student information, monetize personal telemetry, or share confidential profiles with commercial ad networks.
+          </p>
+        </section>
+
+        <section>
+          <h2 class="text-base font-bold text-slate-900 dark:text-white mb-2">
+            2. Data We Collect and Why
+          </h2>
+          <ul class="list-disc pl-5 space-y-1.5">
+            <li>
+              <strong>Academic Profiles:</strong> University name, sector (public vs private), degree program, current semester (1 through 8+), and CGPA. This is used exclusively by the Semester Matcher and Eligibility Verification agents to compute transparent eligibility percentages.
+            </li>
+            <li>
+              <strong>Regional Demographics:</strong> Domicile district (e.g., Charsadda, Swat, Peshawar) and province. This enables targeted matching for geographic quotas, HEC indigenous scholarships, and provincial endowments.
+            </li>
+            <li>
+              <strong>Application Tracking:</strong> Application Kanban stages, notes, and task completion states.
+            </li>
+            <li>
+              <strong>Authentication Credentials:</strong> Passwords are cryptographically salted and hashed using PBKDF2/HMAC-SHA256 with 100,000 iterations. We never store plaintext passwords.
+            </li>
+          </ul>
+        </section>
+
+        <section>
+          <h2 class="text-base font-bold text-slate-900 dark:text-white mb-2">
+            3. Privacy-Conscious, Cookieless Telemetry & Error Tracking
+          </h2>
+          <p>
+            Our analytics system is cookieless and privacy-centric. We log anonymized navigation events (such as opportunity view counts and search keyword categories) without tracking your identity across external sites. Frontend error logging strips all sensitive strings, credentials, and authorization headers prior to dispatch.
+          </p>
+        </section>
+
+        <section>
+          <h2 class="text-base font-bold text-slate-900 dark:text-white mb-2">
+            4. Row-Level Security (RLS) & Access Control
+          </h2>
+          <p>
+            Database access enforces rigorous Row-Level Security (RLS). Students are isolated such that they can only query, view, update, or track their own personal applications and bookmark records. Administrative oversight is strictly audited with immutable system logs.
+          </p>
+        </section>
+
+        <section>
+          <h2 class="text-base font-bold text-slate-900 dark:text-white mb-2">
+            5. Automated Backups & Disaster Recovery
+          </h2>
+          <p>
+            System databases undergo scheduled zero-downtime atomic snapshots stored in secure backup vaults. In disaster recovery scenarios, restoration triggers emergency pre-snapshots ensuring zero unrecorded data divergence.
+          </p>
+        </section>
+
+        <section>
+          <h2 class="text-base font-bold text-slate-900 dark:text-white mb-2">
+            6. Right to Permanent Erasure & Account Deletion
+          </h2>
+          <p>
+            You possess the unambiguous right to permanently delete your account, academic records, match histories, and sessions at any time. A dedicated self-service Account Deletion tool is accessible within your Profile settings. Deletion executes an atomic purge across all tables with immediate session revocation.
+          </p>
+        </section>
+
+        <section>
+          <h2 class="text-base font-bold text-slate-900 dark:text-white mb-2">
+            7. Contact & Data Protection Officer
+          </h2>
+          <p>
+            For privacy inquiries or compliance auditing, contact our Data Protection Team at{' '}
+            <a href="mailto:privacy@opportunity.edu.pk" class="text-sky-600 dark:text-sky-400 font-semibold underline">
+              privacy@opportunity.edu.pk
+            </a>.
+          </p>
+        </section>
+      </div>
+
+      <div className="mt-8 flex justify-between items-center text-xs text-slate-500">
+        <a href="/terms" class="hover:underline">View Terms of Service →</a>
+        <a href="/" class="hover:underline">Back to Home</a>
+      </div>
+    </main>
+
+    <footer class="py-6 px-6 border-t border-slate-200 dark:border-slate-800 text-center text-xs text-slate-500">
+      Student Opportunity Intelligence Platform • Privacy & Security Governance
+    </footer>
+  </div>
+</Layout>

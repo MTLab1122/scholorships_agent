@@ -24,8 +24,8 @@ class GeminiScholarshipClient:
     def __init__(
         self,
         api_key: Optional[str] = None,
-        primary_model: str = "gemini-3.8-flash",
-        fallback_model: str = "gemini-3.5-flash-lite",
+        primary_model: str = "gemini-3.5-flash-lite",
+        fallback_model: str = "gemini-3.5-flash",
         max_retries: int = 3,
         backoff_factor: float = 2.0
     ):
@@ -36,9 +36,15 @@ class GeminiScholarshipClient:
         self.backoff_factor = backoff_factor
 
         self.client = None
+        self.search_tool_enabled = True
         if self.api_key:
             try:
-                self.client = genai.Client(api_key=self.api_key)
+                # timeout in milliseconds: 30000 ms = 30 seconds
+                http_options = types.HttpOptions(
+                    timeout=30000,
+                    retry_options=types.HttpRetryOptions(attempts=2)
+                )
+                self.client = genai.Client(api_key=self.api_key, http_options=http_options)
             except Exception as e:
                 logger.warning(f"Failed to initialize Google GenAI Client: {e}")
 
@@ -63,36 +69,48 @@ class GeminiScholarshipClient:
             return self._mock_discovery(focus, query)
 
         def _call_model(model_name: str):
-            try:
-                # First try with search grounding tool
-                config = types.GenerateContentConfig(
-                    system_instruction=SYSTEM_PROMPT,
-                    tools=[types.Tool(google_search=types.GoogleSearch())],
-                    temperature=0.1,
-                )
-                return self.client.models.generate_content(
-                    model=model_name,
-                    contents=user_message,
-                    config=config
-                )
-            except Exception as e:
-                logger.info(f"Search tool call with {model_name} failed ({e}), falling back to direct prompt synthesis.")
-                config = types.GenerateContentConfig(
-                    system_instruction=SYSTEM_PROMPT,
-                    temperature=0.1,
-                )
-                return self.client.models.generate_content(
-                    model=model_name,
-                    contents=user_message,
-                    config=config
-                )
+            if self.search_tool_enabled:
+                try:
+                    # First try with search grounding tool
+                    config = types.GenerateContentConfig(
+                        system_instruction=SYSTEM_PROMPT,
+                        tools=[types.Tool(google_search=types.GoogleSearch())],
+                        temperature=0.1,
+                    )
+                    return self.client.models.generate_content(
+                        model=model_name,
+                        contents=user_message,
+                        config=config
+                    )
+                except Exception as e:
+                    logger.warning(
+                        f"Search tool call with {model_name} failed ({e}). "
+                        "Disabling search grounding for remaining discovery queries in this run and using direct synthesis."
+                    )
+                    self.search_tool_enabled = False
+
+            # Direct prompt synthesis (without search tool)
+            config = types.GenerateContentConfig(
+                system_instruction=SYSTEM_PROMPT,
+                temperature=0.1,
+            )
+            return self.client.models.generate_content(
+                model=model_name,
+                contents=user_message,
+                config=config
+            )
 
         resp = self._execute_with_retry(_call_model)
         if not resp or not resp.text:
-            return []
+            logger.warning(f"Discovery query for '{focus}' returned no response, using fallback discovery items.")
+            return self._mock_discovery(focus, query)
 
         # Parse JSON array from model output
-        return self._parse_discovery_json(resp.text)
+        items = self._parse_discovery_json(resp.text)
+        if not items:
+            logger.warning(f"Could not parse valid items from discovery output, using fallback for '{focus}'.")
+            return self._mock_discovery(focus, query)
+        return items
 
     def extract_scholarships_from_page(
         self,
@@ -140,7 +158,8 @@ class GeminiScholarshipClient:
 
         resp = self._execute_with_retry(_call_model)
         if not resp or not resp.text:
-            return []
+            logger.warning(f"Extraction returned empty response for {source_url}, using mock fallback.")
+            return self._mock_extraction(source_url, tier, cycle)
 
         try:
             parsed = ExtractionResponse.model_validate_json(resp.text)
@@ -156,7 +175,7 @@ class GeminiScholarshipClient:
                     return [ScholarshipExtractionItem(**item) for item in data]
             except Exception as e2:
                 logger.error(f"Fallback JSON parsing also failed: {e2}")
-            return []
+            return self._mock_extraction(source_url, tier, cycle)
 
     def _execute_with_retry(self, call_func):
         """Executes API call with exponential backoff and fallback model switch."""
@@ -164,18 +183,24 @@ class GeminiScholarshipClient:
             try:
                 return call_func(self.primary_model)
             except Exception as e:
+                err_str = str(e).lower()
                 logger.warning(f"Primary model {self.primary_model} attempt {attempt} failed: {e}")
+                # If rate limit or gateway timeout, don't keep repeating primary if fallback is available
+                if ("429" in err_str or "resource_exhausted" in err_str or "504" in err_str or "deadline" in err_str) and attempt >= 2:
+                    break
                 if attempt < self.max_retries:
-                    sleep_time = self.backoff_factor ** attempt
+                    sleep_time = min(self.backoff_factor ** attempt, 8.0)
                     time.sleep(sleep_time)
 
         # Fallback to secondary model
-        logger.warning(f"Switching to fallback model: {self.fallback_model}")
-        try:
-            return call_func(self.fallback_model)
-        except Exception as e:
-            logger.error(f"Fallback model {self.fallback_model} also failed: {e}")
-            return None
+        if self.fallback_model and self.fallback_model != self.primary_model:
+            logger.warning(f"Switching to fallback model: {self.fallback_model}")
+            try:
+                return call_func(self.fallback_model)
+            except Exception as e:
+                logger.error(f"Fallback model {self.fallback_model} also failed: {e}")
+                return None
+        return None
 
     def _parse_discovery_json(self, text: str) -> List[DiscoveryItem]:
         cleaned = text.strip()
@@ -190,7 +215,26 @@ class GeminiScholarshipClient:
         try:
             raw_items = json.loads(cleaned)
             if isinstance(raw_items, list):
-                return [DiscoveryItem(**item) for item in raw_items if isinstance(item, dict)]
+                items = []
+                for item in raw_items:
+                    if isinstance(item, dict):
+                        # Map common alternative keys that LLMs produce
+                        name = item.get("name") or item.get("scholarship_name") or item.get("title") or ""
+                        sponsor = item.get("sponsor") or item.get("provider") or item.get("organization") or ""
+                        official_url = item.get("official_url") or item.get("official_website") or item.get("url") or item.get("link") or ""
+                        other_url = item.get("other_url") or ""
+                        deadline_claim = item.get("deadline_claim") or item.get("deadline") or "not stated"
+                        why_relevant = item.get("why_relevant") or item.get("relevance") or item.get("coverage") or ""
+                        if name and sponsor:
+                            items.append(DiscoveryItem(
+                                name=str(name),
+                                sponsor=str(sponsor),
+                                official_url=str(official_url),
+                                other_url=str(other_url),
+                                deadline_claim=str(deadline_claim),
+                                why_relevant=str(why_relevant)
+                            ))
+                return items
         except Exception as e:
             logger.warning(f"Failed to parse discovery JSON: {e}")
         return []

@@ -1,0 +1,28 @@
+---
+import Layout from './Layout.astro';
+import Sidebar from '../components/Sidebar.astro';
+import Header from '../components/Header.astro';
+
+interface Props {
+  title?: string;
+  pageTitle?: string;
+}
+
+const { title = "Student Portal | Student Opportunity Intelligence", pageTitle = "Student Portal" } = Astro.props;
+const currentPath = Astro.url.pathname;
+---
+
+<Layout title={title}>
+  <div class="flex min-h-screen">
+    <!-- Student Sidebar -->
+    <Sidebar role="student" currentPath={currentPath} />
+
+    <!-- Main Content Container -->
+    <div class="flex-1 flex flex-col min-w-0 bg-slate-50 dark:bg-slate-950 transition-colors">
+      <Header role="student" pageTitle={pageTitle} />
+      <main class="flex-1 p-4 sm:p-6 md:p-8 max-w-7xl w-full mx-auto animate-fade-in">
+        <slot />
+      </main>
+    </div>
+  </div>
+</Layout>

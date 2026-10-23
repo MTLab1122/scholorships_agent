@@ -1,0 +1,132 @@
+---
+import Layout from '../layouts/Layout.astro';
+import ThemeToggle from '../components/react/ThemeToggle';
+---
+
+<Layout title="Student Opportunity Intelligence | Discover. Qualify. Apply. Achieve.">
+  <div class="min-h-screen flex flex-col justify-between bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 transition-colors">
+    <!-- Navbar -->
+    <header class="px-6 py-4 flex items-center justify-between border-b border-slate-200 dark:border-slate-800 bg-white/70 dark:bg-slate-900/70 backdrop-blur sticky top-0 z-20">
+      <div class="flex items-center gap-2.5">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-sky-500 to-indigo-600 flex items-center justify-center text-white font-black text-xl shadow-md shadow-sky-500/20">
+          🎓
+        </div>
+        <div>
+          <span class="font-bold text-base tracking-tight text-slate-900 dark:text-white">Student Opportunity</span>
+          <span class="text-sky-600 dark:text-sky-400 font-bold text-base ml-1">Intelligence</span>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-2.5 sm:gap-3">
+        <ThemeToggle client:load />
+        
+        <a
+          href="/login"
+          class="text-xs font-semibold px-3 py-1.5 rounded-lg text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-700 transition-colors"
+        >
+          Sign In
+        </a>
+        <a
+          href="/register"
+          class="hidden sm:inline-flex text-xs font-bold px-3.5 py-1.5 rounded-lg bg-sky-500 hover:bg-sky-400 text-white shadow-md shadow-sky-500/20 transition-all"
+        >
+          Get Started
+        </a>
+      </div>
+    </header>
+
+    <!-- Hero Section -->
+    <main class="flex-1 max-w-5xl mx-auto px-6 py-16 flex flex-col items-center text-center">
+      <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-semibold bg-sky-50 text-sky-700 dark:bg-sky-950/60 dark:text-sky-300 border border-sky-200 dark:border-sky-800/50 mb-6 animate-fade-in shadow-xs">
+        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+        Autonomous Multi-Agent Opportunity Intelligence Engine Active
+      </div>
+
+      <h1 class="text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight text-slate-900 dark:text-white max-w-4xl leading-tight">
+        Discover, Qualify, and Apply for <span class="bg-gradient-to-r from-sky-500 to-indigo-600 bg-clip-text text-transparent">Every Opportunity</span>
+      </h1>
+
+      <p class="mt-5 text-base md:text-lg text-slate-600 dark:text-slate-400 max-w-2xl leading-relaxed">
+        The complete intelligence system for scholarships, internships, research funding, competitions, and semester-wise personalized student matching across public and private universities.
+      </p>
+
+      <!-- Portals Selection Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-12 w-full max-w-3xl text-left">
+        <!-- Student Portal Card -->
+        <a
+          href="/student/dashboard"
+          class="group p-6 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-2xl hover:border-sky-500 dark:hover:border-sky-500 transition-all duration-300 flex flex-col justify-between card-hover-3d"
+        >
+          <div>
+            <div class="w-12 h-12 rounded-xl bg-sky-50 dark:bg-sky-950/60 text-sky-600 dark:text-sky-400 flex items-center justify-center text-2xl mb-4 group-hover:scale-110 transition-transform">
+              🎓
+            </div>
+            <h2 class="text-xl font-bold text-slate-900 dark:text-white group-hover:text-sky-600 dark:group-hover:text-sky-400 transition-colors">
+              Student Discovery Portal
+            </h2>
+            <p class="mt-2 text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
+              Explore qualified scholarships, internships, semester-wise opportunities, transparent match scores (0–100%), Kanban application tracking, and automated document preparation.
+            </p>
+          </div>
+          <div class="mt-6 flex items-center gap-1.5 text-xs font-bold text-sky-600 dark:text-sky-400 group-hover:translate-x-1 transition-transform">
+            Open Student Portal →
+          </div>
+        </a>
+
+        <!-- Admin Control Center Card -->
+        <a
+          href="/admin/dashboard"
+          class="group p-6 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-2xl hover:border-indigo-500 dark:hover:border-indigo-500 transition-all duration-300 flex flex-col justify-between card-hover-3d"
+        >
+          <div>
+            <div class="w-12 h-12 rounded-xl bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 flex items-center justify-center text-2xl mb-4 group-hover:scale-110 transition-transform">
+              ⚡
+            </div>
+            <h2 class="text-xl font-bold text-slate-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
+              Admin Control Center
+            </h2>
+            <p class="mt-2 text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
+              Supervise the autonomous fleet of 15 AI agents, inspect live workflow pipelines, manage the 20-report center, audit official source registries, and manage zero-downtime backups.
+            </p>
+          </div>
+          <div class="mt-6 flex items-center gap-1.5 text-xs font-bold text-indigo-600 dark:text-indigo-400 group-hover:translate-x-1 transition-transform">
+            Open Control Center →
+          </div>
+        </a>
+      </div>
+
+      <!-- Feature Pill Badges -->
+      <div class="mt-14 flex flex-wrap justify-center gap-3 text-xs font-medium text-slate-600 dark:text-slate-400">
+        <span class="px-3 py-1 rounded-full bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
+          ✓ 15 Specialized AI Agents
+        </span>
+        <span class="px-3 py-1 rounded-full bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
+          ✓ 20 Publication-Grade Reports
+        </span>
+        <span class="px-3 py-1 rounded-full bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
+          ✓ Charsadda & KP Regional Priority Quota
+        </span>
+        <span class="px-3 py-1 rounded-full bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
+          ✓ Public & Private Sector Cross-Filtering
+        </span>
+        <span class="px-3 py-1 rounded-full bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
+          ✓ Semesters 1 to 8+ Eligibility Trees
+        </span>
+      </div>
+    </main>
+
+    <!-- Footer with Legal & Compliance Links -->
+    <footer class="py-6 px-6 border-t border-slate-200 dark:border-slate-800 text-center text-xs text-slate-500 dark:text-slate-400 flex flex-col sm:flex-row items-center justify-between gap-4 max-w-7xl mx-auto w-full">
+      <div>
+        Student Opportunity Intelligence Platform • Discover. Qualify. Apply. Achieve.
+      </div>
+      <div class="flex items-center gap-4 text-xs font-medium">
+        <a href="/login" class="hover:text-slate-800 dark:hover:text-white transition-colors">Sign In</a>
+        <a href="/register" class="hover:text-slate-800 dark:hover:text-white transition-colors">Register</a>
+        <a href="/privacy" class="hover:text-slate-800 dark:hover:text-white transition-colors">Privacy Policy</a>
+        <a href="/terms" class="hover:text-slate-800 dark:hover:text-white transition-colors">Terms of Service</a>
+        <a href="/docs" target="_blank" class="hover:text-slate-800 dark:hover:text-white transition-colors">API Docs</a>
+      </div>
+    </footer>
+  </div>
+</Layout>

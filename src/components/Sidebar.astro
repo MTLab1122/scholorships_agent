@@ -1,0 +1,232 @@
+---
+interface Props {
+  role: 'admin' | 'student';
+  currentPath: string;
+}
+
+const { role, currentPath } = Astro.props;
+
+const adminNavGroups = [
+  {
+    title: 'Overview',
+    items: [
+      { label: 'Dashboard', href: '/admin/dashboard', icon: '📊' },
+      { label: 'Activity Center', href: '/admin/health', icon: '⚡' },
+      { label: 'Notifications', href: '/notifications', icon: '🔔' },
+    ]
+  },
+  {
+    title: 'Intelligence',
+    items: [
+      { label: 'Opportunity Explorer', href: '/admin/opportunities', icon: '🔍' },
+      { label: 'Student Matching', href: '/admin/students', icon: '🎯' },
+      { label: 'Verification Queue', href: '/admin/verification', icon: '🛡️' },
+    ]
+  },
+  {
+    title: 'Reports',
+    items: [
+      { label: '20 Report Center', href: '/admin/reports', icon: '📑' },
+    ]
+  },
+  {
+    title: 'Automation',
+    items: [
+      { label: '15 AI Agents', href: '/admin/agents', icon: '🤖' },
+      { label: 'Workflows', href: '/admin/workflows', icon: '🔄' },
+      { label: 'Schedules', href: '/admin/schedules', icon: '⏰' },
+      { label: 'Source Registry', href: '/admin/sources', icon: '🌐' },
+    ]
+  },
+  {
+    title: 'Administration',
+    items: [
+      { label: 'Student Directory', href: '/admin/students', icon: '👥' },
+      { label: 'Database Backups', href: '/admin/backups', icon: '🗄️' },
+      { label: 'System Settings', href: '/admin/settings', icon: '⚙️' },
+      { label: 'Audit Logs', href: '/admin/audit-logs', icon: '📜' },
+      { label: 'System Health', href: '/admin/health', icon: '🩺' },
+    ]
+  }
+];
+
+const studentNavGroups = [
+  {
+    title: 'Discovery',
+    items: [
+      { label: 'Dashboard', href: '/student/dashboard', icon: '🎓' },
+      { label: 'Explore Opportunities', href: '/student/opportunities', icon: '🔍' },
+      { label: 'Recommendations', href: '/student/recommendations', icon: '✨' },
+      { label: 'Saved Bookmarks', href: '/student/saved', icon: '🔖' },
+    ]
+  },
+  {
+    title: 'Applications',
+    items: [
+      { label: 'Application Tracker', href: '/student/applications', icon: '📋' },
+      { label: 'Application Prep Studio', href: '/student/prep', icon: '📝' },
+    ]
+  },
+  {
+    title: 'Account',
+    items: [
+      { label: 'My Profile & Settings', href: '/student/profile', icon: '👤' },
+      { label: 'Notifications', href: '/notifications', icon: '🔔' },
+    ]
+  }
+];
+
+const navGroups = role === 'admin' ? adminNavGroups : studentNavGroups;
+---
+
+<!-- Mobile Drawer Backdrop -->
+<div id="sidebar-backdrop" class="fixed inset-0 bg-black/60 z-30 hidden lg:hidden backdrop-blur-xs transition-opacity"></div>
+
+<aside
+  id="app-sidebar"
+  class="fixed inset-y-0 left-0 z-40 -translate-x-full lg:static lg:translate-x-0 w-64 bg-slate-900 border-r border-slate-800 text-slate-300 flex flex-col flex-shrink-0 min-h-screen transition-transform duration-300 shadow-2xl lg:shadow-none"
+  aria-label="Sidebar Navigation"
+>
+  <!-- Brand Logo Header -->
+  <div class="p-4 border-b border-slate-800 flex items-center justify-between">
+    <a href={role === 'admin' ? '/admin/dashboard' : '/student/dashboard'} class="flex items-center gap-2.5">
+      <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-sky-500 to-indigo-600 flex items-center justify-center text-white font-black text-lg shadow-md shadow-sky-500/20">
+        🎓
+      </div>
+      <div>
+        <div class="font-bold text-white text-sm tracking-tight leading-tight">Opportunity</div>
+        <div class="text-[10px] text-sky-400 font-semibold tracking-wider uppercase">Intelligence Platform</div>
+      </div>
+    </a>
+
+    <!-- Mobile Close Button -->
+    <button
+      id="sidebar-close-btn"
+      type="button"
+      class="lg:hidden p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
+      aria-label="Close navigation drawer"
+    >
+      ✕
+    </button>
+  </div>
+
+  <!-- Role Toggle Pill -->
+  <div class="p-3">
+    <div class="bg-slate-950/80 p-1 rounded-xl border border-slate-800 flex items-center gap-1 text-xs font-semibold">
+      <a
+        href="/student/dashboard"
+        class={`flex-1 py-1.5 px-2 rounded-lg text-center transition-all ${
+          role === 'student'
+            ? 'bg-sky-500 text-white shadow-sm'
+            : 'text-slate-400 hover:text-white'
+        }`}
+      >
+        🎓 Student
+      </a>
+      <a
+        href="/admin/dashboard"
+        class={`flex-1 py-1.5 px-2 rounded-lg text-center transition-all ${
+          role === 'admin'
+            ? 'bg-sky-500 text-white shadow-sm'
+            : 'text-slate-400 hover:text-white'
+        }`}
+      >
+        ⚡ Admin
+      </a>
+    </div>
+  </div>
+
+  <!-- Navigation Groups -->
+  <nav class="flex-1 px-3 py-2 space-y-5 overflow-y-auto">
+    {navGroups.map((group) => (
+      <div>
+        <div class="px-2 text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-1.5">
+          {group.title}
+        </div>
+        <ul class="space-y-0.5">
+          {group.items.map((item) => {
+            const isActive = currentPath === item.href || (item.href !== '/' && currentPath.startsWith(item.href));
+            return (
+              <li>
+                <a
+                  href={item.href}
+                  class={`flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-xs font-medium transition-all ${
+                    isActive
+                      ? 'bg-sky-500/15 text-sky-400 font-semibold border border-sky-500/30'
+                      : 'text-slate-400 hover:text-slate-100 hover:bg-slate-800/60'
+                  }`}
+                >
+                  <span class="text-sm">{item.icon}</span>
+                  <span>{item.label}</span>
+                </a>
+              </li>
+            );
+          })}
+        </ul>
+      </div>
+    ))}
+  </nav>
+
+  <!-- Sidebar Footer -->
+  <div class="p-3 border-t border-slate-800 bg-slate-950/60 space-y-2">
+    <!-- User summary card -->
+    <a
+      href={role === 'admin' ? '/admin/settings' : '/student/profile'}
+      class="flex items-center gap-2.5 p-2 rounded-xl bg-slate-800/60 hover:bg-slate-800 text-xs transition-colors group"
+      title="View account settings"
+    >
+      <div class="w-8 h-8 rounded-lg bg-sky-950 text-sky-400 border border-sky-800/50 flex items-center justify-center font-bold text-xs">
+        {role === 'admin' ? 'AD' : 'ST'}
+      </div>
+      <div class="flex-1 min-w-0">
+        <div class="font-bold text-white truncate text-[11px] group-hover:text-sky-400 transition-colors">
+          {role === 'admin' ? 'System Administrator' : 'Student Scholar'}
+        </div>
+        <div class="text-[10px] text-slate-400 truncate">
+          {role === 'admin' ? 'Super Admin Mode' : 'Charsadda Priority • Sem 4'}
+        </div>
+      </div>
+    </a>
+
+    <!-- Legal Compliance & Help Links -->
+    <div class="flex items-center justify-between px-2 text-[10px] text-slate-500 pt-1">
+      <a href="/privacy" class="hover:text-slate-300 transition-colors">Privacy Policy</a>
+      <span>•</span>
+      <a href="/terms" class="hover:text-slate-300 transition-colors">Terms</a>
+      <span>•</span>
+      <button
+        type="button"
+        id="sidebar-signout-btn"
+        class="text-rose-400 hover:text-rose-300 font-semibold transition-colors"
+      >
+        Sign Out
+      </button>
+    </div>
+  </div>
+</aside>
+
+<script is:inline>
+  const closeBtn = document.getElementById('sidebar-close-btn');
+  const sidebarEl = document.getElementById('app-sidebar');
+  const backdropEl = document.getElementById('sidebar-backdrop');
+  const signoutBtn = document.getElementById('sidebar-signout-btn');
+
+  if (closeBtn && sidebarEl) {
+    closeBtn.addEventListener('click', () => {
+      sidebarEl.classList.add('-translate-x-full');
+      if (backdropEl) backdropEl.classList.add('hidden');
+    });
+  }
+
+  if (signoutBtn) {
+    signoutBtn.addEventListener('click', async () => {
+      try {
+        await fetch('/api/auth/logout', { method: 'POST' });
+      } catch (e) {}
+      localStorage.removeItem('soi_auth_token');
+      localStorage.removeItem('soi_auth_user');
+      document.cookie = 'session_token=; path=/; max-age=0; SameSite=Lax';
+      window.location.href = '/login';
+    });
+  }
+</script>

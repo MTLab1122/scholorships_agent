@@ -1,0 +1,58 @@
+---
+import '../styles/global.css';
+import ToastContainer from '../components/react/Toast';
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const {
+  title = "Student Opportunity Intelligence | Discover. Qualify. Apply. Achieve.",
+  description = "Autonomous Multi-Agent Scholarship, Internship, and Academic Opportunity Intelligence Platform for Pakistani University Students."
+} = Astro.props;
+---
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#0284c7" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <title>{title}</title>
+
+    <!-- Typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Theme flash prevention script -->
+    <script is:inline>
+      const theme = localStorage.getItem('soi_theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+      if (theme === 'dark') {
+        document.documentElement.classList.add('dark');
+        document.documentElement.setAttribute('data-theme', 'dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    </script>
+  </head>
+  <body class="bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 min-h-screen transition-colors duration-200">
+    <ToastContainer client:load />
+    <slot />
+
+    <!-- Telemetry Client Script -->
+    <script>
+      import '../lib/telemetry';
+    </script>
+  </body>
+</html>

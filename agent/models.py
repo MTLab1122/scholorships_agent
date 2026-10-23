@@ -2,7 +2,7 @@
 Implements the required fields from Section 7, flags from Section 5, and runtime status fields.
 """
 
-from typing import List, Optional, Literal
+from typing import List, Optional, Literal, Dict, Any
 from pydantic import BaseModel, Field
 
 
@@ -239,6 +239,36 @@ class ScholarshipRecord(ScholarshipExtractionItem):
     all_source_urls: List[str] = Field(default_factory=list)
     notes: Optional[str] = Field(default=None)
 
+    # Opportunity Intelligence Extensions
+    category: str = Field(default="scholarships", description="Primary category: scholarships, internships, financial_aid, research_fellowships, etc.")
+    is_national: bool = Field(default=True)
+    is_international: bool = Field(default=False)
+    work_mode: str = Field(default="not stated", description="onsite, remote, hybrid, or not stated")
+    paid_status: str = Field(default="not stated", description="paid, unpaid, stipend, or not stated")
+    stipend_amount: str = Field(default="not stated")
+    eligible_semesters: List[int] = Field(default_factory=list, description="e.g. [1, 2, 3, 4, 5, 6, 7, 8]")
+    is_fully_funded: bool = Field(default=False)
+    is_partially_funded: bool = Field(default=False)
+    is_need_based: bool = Field(default=False)
+    is_merit_based: bool = Field(default=False)
+    fraud_risk_score: float = Field(default=0.0)
+    fraud_risk_flags: List[str] = Field(default_factory=list)
+
+    @property
+    def min_semester(self) -> int:
+        if self.eligible_semesters:
+            return min(self.eligible_semesters)
+        return 1
+
+    @property
+    def max_semester(self) -> int:
+        if self.eligible_semesters:
+            return max(self.eligible_semesters)
+        return 8
+
+
+OpportunityRecord = ScholarshipRecord
+
 
 class DiscoveryItem(BaseModel):
     """Candidate item discovered during search phase."""
@@ -248,10 +278,11 @@ class DiscoveryItem(BaseModel):
     other_url: str = ""
     deadline_claim: str = "not stated"
     why_relevant: str = ""
+    category: str = "scholarships"
 
 
 class ReportSummary(BaseModel):
-    """Summary counts for daily report header."""
+    """Summary counts for report header."""
     title: str
     audience: str
     generated_at_pkt: str
@@ -264,3 +295,90 @@ class ReportSummary(BaseModel):
     kp_eligible_count: int
     broken_links_count: int
     degraded_mode: bool = False
+    report_number: str = "01"
+    category: str = "Scholarships"
+
+
+class StudentProfile(BaseModel):
+    """Student profile for personalized opportunity matching."""
+    id: str = ""
+    full_name: str
+    email: str
+    phone: str = ""
+    university: str
+    university_type: UniversityTypes = "public"
+    degree_level: str = "Undergraduate"
+    discipline: str = "Computer Science"
+    current_semester: int = 1
+    cgpa: float = 3.0
+    domicile_district: str = "Charsadda"
+    domicile_province: str = "Khyber Pakhtunkhwa"
+    work_preference: str = "any" # "remote", "onsite", "hybrid", "any"
+    funding_need: str = "any" # "high", "medium", "low", "any"
+    skills: List[str] = Field(default_factory=list)
+    interests: List[str] = Field(default_factory=list)
+
+    @property
+    def name(self) -> str:
+        return self.full_name
+
+    @property
+    def university_name(self) -> str:
+        return self.university
+
+    @property
+    def current_degree(self) -> str:
+        return self.degree_level
+
+
+class StudentMatch(BaseModel):
+    """Ranked match result between student and opportunity."""
+    student_id: str
+    opportunity_id: str
+    opportunity_name: str
+    sponsor: str
+    category: str
+    deadline: str
+    match_score: float
+    eligibility_status: Literal["confirmed_eligible", "likely_eligible", "not_eligible", "insufficient_information"]
+    reasons: List[str] = Field(default_factory=list)
+    unmet_criteria: List[str] = Field(default_factory=list)
+    unknown_criteria: List[str] = Field(default_factory=list)
+    recommended_priority: Literal["high", "medium", "low"] = "medium"
+
+
+class ApplicationRecord(BaseModel):
+    """Application tracking record for student Kanban."""
+    id: str = ""
+    student_id: str
+    opportunity_id: str
+    opportunity_name: str = ""
+    sponsor: str = ""
+    status: Literal[
+        "interested",
+        "checking_eligibility",
+        "preparing_documents",
+        "ready_to_apply",
+        "applied",
+        "interview_assessment",
+        "awarded_accepted",
+        "rejected",
+        "withdrawn"
+    ] = "interested"
+    deadline: str = ""
+    notes: str = ""
+    tasks: List[Dict[str, Any]] = Field(default_factory=list)
+    documents_checklist: List[Dict[str, Any]] = Field(default_factory=list)
+    created_at: str = ""
+    updated_at: str = ""
+
+
+class ReportDefinition(BaseModel):
+    """Definition for one of the 20 official reports."""
+    number: str # e.g. "01", "02", ..., "20"
+    title: str
+    category: str # "Scholarships", "Internships", "Additional Opportunities", "Action and Intelligence"
+    description: str
+    target_audience: str
+    filter_criteria: Dict[str, Any] = Field(default_factory=dict)
+

@@ -38,7 +38,7 @@ TIER_1_DOMAINS = [
 
 
 class OpportunityNormalizer:
-    def __init__(self, current_cycle: str = "2026-27", user_agent: str = "ScholarshipVerificationAgent/1.0", timeout: int = 15):
+    def __init__(self, current_cycle: str = "2026-27", user_agent: str = "ScholarshipVerificationAgent/1.0", timeout: int = 8):
         self.current_cycle = current_cycle
         self.user_agent = user_agent
         self.timeout = timeout
@@ -47,6 +47,7 @@ class OpportunityNormalizer:
             "User-Agent": self.user_agent,
             "Accept": "*/*"
         })
+        self._link_cache: Dict[str, LinkStatus] = {}
 
     def normalize_record(
         self,
@@ -129,6 +130,18 @@ class OpportunityNormalizer:
 
         return suggested_tier
 
+    def compute_status(
+        self,
+        deadline_str: str,
+        opening_str: str = "",
+        expiry_str: str = "",
+        cycle_str: str = "",
+        today: Optional[datetime.date] = None
+    ) -> Tuple[OpportunityStatus, Optional[int]]:
+        """Public method to compute status and days remaining for an opportunity."""
+        today_date = today or datetime.date.today()
+        return self._calculate_status_and_days(deadline_str, opening_str, cycle_str, today_date)
+
     def _calculate_status_and_days(
         self,
         deadline_str: str,
@@ -194,16 +207,42 @@ class OpportunityNormalizer:
     def check_link(self, url: str) -> LinkStatus:
         """Sends an HTTP GET to verify link status following redirects.
         Status < 400 -> working, 4xx/5xx -> broken, timeout -> unreachable.
+        Uses in-memory cache to avoid duplicate network latency.
         """
+        if not url or url == "not stated":
+            return "not stated"
+        if url in self._link_cache:
+            return self._link_cache[url]
         try:
             resp = self.session.get(url, timeout=self.timeout, allow_redirects=True)
             if resp.status_code < 400:
-                return "working"
+                res = "working"
             else:
-                return "broken"
+                res = "broken"
         except requests.exceptions.Timeout:
-            return "unreachable"
+            res = "unreachable"
+        except requests.exceptions.SSLError:
+            try:
+                resp = self.session.get(url, timeout=self.timeout, allow_redirects=True, verify=False)
+                res = "working" if resp.status_code < 400 else "broken"
+            except Exception:
+                res = "broken"
         except requests.exceptions.RequestException:
-            return "broken"
+            res = "broken"
         except Exception:
-            return "unreachable"
+            res = "unreachable"
+
+        self._link_cache[url] = res
+        return res
+
+    def batch_check_links(self, urls: List[str]) -> None:
+        """Pre-checks a collection of URLs concurrently using ThreadPoolExecutor."""
+        from concurrent.futures import ThreadPoolExecutor
+        unique_urls = [
+            u for u in set(urls)
+            if u and u != "not stated" and u.startswith("http") and u not in self._link_cache
+        ]
+        if not unique_urls:
+            return
+        with ThreadPoolExecutor(max_workers=10) as executor:
+            list(executor.map(self.check_link, unique_urls))

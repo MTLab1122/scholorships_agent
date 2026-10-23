@@ -43,5 +43,16 @@ htmlcov/
 .env
 .env.local
 
-# Local scratch logs
+# Local scratch logs & preview files
 *.log
+email_preview.html
+**/email_preview.html
+*.db
+*.sqlite
+!data/opportunities.db
+*.db-shm
+*.db-wal
+data/backups/
+node_modules/
+.astro/
+dist/
