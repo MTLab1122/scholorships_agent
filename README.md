@@ -145,8 +145,8 @@ Each report is generated into `reports/YYYY-MM-DD/` in 4 formats: **HTML**, **PD
 ### Installation
 ```bash
 # Clone the repository
-git clone https://github.com/your-username/scholorships_agent.git
-cd scholorships_agent
+git clone https://github.com/MTLab1122/student-opportunity-intelligence.git
+cd student-opportunity-intelligence
 
 # Create virtual environment
 python -m venv .venv
@@ -345,10 +345,10 @@ The web interface is built with **Astro 4**, **Tailwind CSS**, and **React 18 is
 ### Key Capabilities & Routes
 - **Authentication & RBAC (`/login`, `/register`, `/forgot-password`, `/reset-password`, `/verify-email`):**
   - Real session tokens via `Authorization: Bearer <token>` and `x-auth-token`.
-  - Client-side and server-side RBAC guards (`admin` vs `student`) in [auth.ts](file:///c:/Users/muham/Desktop/scholorships_agent/src/lib/auth.ts).
+  - Client-side and server-side RBAC guards (`admin` vs `student`) in `src/lib/auth.ts`.
   - Rate limiting handling on auth forms: Displays responsive 60-second countdown upon receiving HTTP 429 Too Many Requests.
   - Quick demo evaluations for both Student (`student@uop.edu.pk`) and Admin (`admin@opportunity.edu.pk`).
-  - Irreversible account deletion with name confirmation in [StudentProfileForm.tsx](file:///c:/Users/muham/Desktop/scholorships_agent/src/components/react/StudentProfileForm.tsx).
+  - Irreversible account deletion with name confirmation in `src/components/react/StudentProfileForm.tsx`.
 - **Onboarding Wizard (`/onboarding`):**
   - 4-step guided setup: Degree & Semester selection, Regional Quota & Need assessment, Skills & Career Goals, and instantaneous live opportunity preview.
 - **Enterprise Disaster Recovery & Backups (`/admin/backups`):**
@@ -360,7 +360,7 @@ The web interface is built with **Astro 4**, **Tailwind CSS**, and **React 18 is
   - Automatic scrubbing of auth tokens, passwords, and sensitive keys.
   - Global listeners capturing unhandled JavaScript errors and unhandled promise rejections.
 - **Accessible UI & Toast System:**
-  - Zero intrusive native alerts; replaced with [Toast.tsx](file:///c:/Users/muham/Desktop/scholorships_agent/src/components/react/Toast.tsx) notifications (`success`, `error`, `warning`, `info`).
+  - Zero intrusive native alerts; replaced with `src/components/react/Toast.tsx` notifications (`success`, `error`, `warning`, `info`).
   - Shimmer skeleton loaders across data tables and lists.
   - Fully responsive mobile drawer navigation and custom 404 page (`/404`).
   - Respects user motion preferences (`prefers-reduced-motion: reduce`).
